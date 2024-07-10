@@ -1,0 +1,12 @@
+{
+	"name": "auth-service",
+	"version": "1.0.0",
+	"description": "An authentication service provider.",
+	"main": "index.js",
+	"scripts": {
+		"test": ""
+	},
+	"keywords": [],
+	"author": "Winterson S.",
+	"license": "ISC"
+}
