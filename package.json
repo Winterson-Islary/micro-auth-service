@@ -4,12 +4,15 @@
 	"description": "An authentication service provider.",
 	"main": "index.js",
 	"scripts": {
-		"dev": ""
+		"dev": "",
+		"format:check": "biome check ./src",
+		"format:fix": "biome check --write ./src"
 	},
 	"keywords": [],
 	"author": "Winterson S.",
 	"license": "ISC",
 	"devDependencies": {
+		"@biomejs/biome": "1.8.3",
 		"@types/node": "^20.14.10",
 		"typescript": "^5.5.3"
 	}

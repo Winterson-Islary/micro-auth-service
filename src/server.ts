@@ -1,5 +1,3 @@
-const Greet = (name: string): void => {
-	console.log("Hello ", name);
-};
+const Greet = (_name: string, _age: number): void => {};
 
-Greet("greta");
+Greet("greta", 2);
