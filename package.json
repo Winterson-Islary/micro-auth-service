@@ -4,9 +4,13 @@
 	"description": "An authentication service provider.",
 	"main": "index.js",
 	"scripts": {
-		"test": ""
+		"dev": ""
 	},
 	"keywords": [],
 	"author": "Winterson S.",
-	"license": "ISC"
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^20.14.10",
+		"typescript": "^5.5.3"
+	}
 }
