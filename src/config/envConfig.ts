@@ -3,4 +3,4 @@ config();
 
 const { PORT } = process.env;
 
-export const Config = { PORT };
+export const Config = { PORT } as const;

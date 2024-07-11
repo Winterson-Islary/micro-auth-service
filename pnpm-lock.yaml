@@ -14,6 +14,9 @@ importers:
       express:
         specifier: ^4.19.2
         version: 4.19.2
+      http-errors:
+        specifier: ^2.0.0
+        version: 2.0.0
       winston:
         specifier: ^3.13.1
         version: 3.13.1
@@ -24,6 +27,9 @@ importers:
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
+      '@types/http-errors':
+        specifier: ^2.0.4
+        version: 2.0.4
       '@types/node':
         specifier: ^20.14.10
         version: 20.14.10
