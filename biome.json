@@ -10,8 +10,8 @@
 			"correctness": {
 				"noUnusedVariables": "warn"
 			},
-			"suspicious": {
-				"noConsoleLog": "error"
+			"nursery": {
+				"noConsole": "error"
 			}
 		}
 	},
