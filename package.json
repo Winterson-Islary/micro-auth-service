@@ -5,6 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"prepare": "husky",
+		"dev": "pnpm exec tsc && node dist/src/server.js",
 		"format:check": "biome check ./src",
 		"format:fix": "biome check --write ./src"
 	},
@@ -19,6 +20,11 @@
 		"typescript": "^5.5.3"
 	},
 	"lint-staged": {
-		"*.ts": ["pnpm run format:fix"]
+		"*.ts": [
+			"pnpm run format:fix"
+		]
+	},
+	"dependencies": {
+		"dotenv": "^16.4.5"
 	}
 }
