@@ -1,7 +1,15 @@
+import app from "./app";
 import { Config } from "./config/envConfig";
 
-const Greet = (_name: string, _age: number): void => {
-	console.info("Inside Greet with PORT:", Config.PORT);
+const startServer = () => {
+	const PORT = Config.PORT;
+	try {
+		app.listen(PORT, () => {
+			console.info("Listening on PORT:", PORT);
+		});
+	} catch (error) {
+		console.error("Error: ", error);
+		process.exit(1);
+	}
 };
-
-Greet("greta", 2);
+startServer();
