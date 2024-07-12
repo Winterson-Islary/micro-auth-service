@@ -7,8 +7,8 @@ import type { HttpError } from "http-errors";
 import logger from "./config/logger";
 
 const app = express();
-app.get("/", (_req, res) => {
-	res.send("Hello from auth service");
+app.get("/", async (_req, res) => {
+	res.status(200).send("Hello from auth service");
 });
 app.use((err: HttpError, _req: Request, res: Response, _next: NextFunction) => {
 	logger.error(err.message);
