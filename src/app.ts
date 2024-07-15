@@ -9,6 +9,7 @@ import logger from "./configs/logger";
 import authRouter from "./routes/auth";
 
 const app = express();
+app.use(express.json());
 app.get("/", async (_req, res) => {
 	res.status(200).send("Hello from auth service");
 });
