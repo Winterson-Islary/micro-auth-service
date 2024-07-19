@@ -1,20 +1,14 @@
-import type { Request, Response } from "express";
-import { AppDataSource } from "../configs/data-source";
-import { User } from "../entity/User";
+import type { Response } from "express";
+import type { IUserService, RegisterUserRequest } from "../types";
 
-type UserData = {
-	name: string;
-	email: string;
-	password: string;
-};
-interface RegisterUserRequest extends Request {
-	body: UserData;
-}
 export class AuthController {
+	userService: IUserService;
+	constructor(userService: IUserService) {
+		this.userService = userService;
+	}
 	async register(req: RegisterUserRequest, res: Response) {
 		const { name, email, password } = req.body;
-		const userRepository = AppDataSource.getRepository(User);
-		await userRepository.save({ name, email, password });
+		this.userService.create({ name, email, password });
 		res.status(201).json();
 	}
 }
