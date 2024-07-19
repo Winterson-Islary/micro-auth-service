@@ -1,10 +1,10 @@
-import { AppDataSource } from "../configs/data-source";
-import { User } from "../entity/User";
+import type { Repository } from "typeorm";
+import type { User } from "../entity/User";
 import type { IUserService, UserData } from "../types";
 
 export class UserService implements IUserService {
+	constructor(private userRepository: Repository<User>) {}
 	async create({ name, email, password }: UserData) {
-		const userRepository = AppDataSource.getRepository(User);
-		await userRepository.save({ name, email, password });
+		await this.userRepository.save({ name, email, password });
 	}
 }
