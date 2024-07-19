@@ -1,0 +1,16 @@
+version: "0.1.0"
+
+services:
+  database:
+    container_name: postgres_DB
+    image: postgres
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USERNAME}
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    volumes:
+      - pgUserData:/var/lib/postgresql/data
+volumes:
+  pgUserData:
