@@ -7,7 +7,12 @@ export class UserService implements IUserService {
 	constructor(private userRepository: Repository<User>) {}
 	async create({ name, email, password }: UserData): Promise<User | null> {
 		try {
-			return await this.userRepository.save({ name, email, password });
+			return await this.userRepository.save({
+				name,
+				email,
+				password,
+				role: "customer",
+			});
 		} catch (_err) {
 			const customError = createHttpError(500, "failed to register user");
 			throw customError;

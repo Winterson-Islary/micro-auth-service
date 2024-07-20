@@ -11,7 +11,9 @@ describe("POST /auth/register", () => {
 		connection = await AppDataSource.initialize();
 	});
 	beforeEach(async () => {
-		await truncateTables(connection);
+		// Truncating DB
+		await connection.dropDatabase();
+		await connection.synchronize();
 	});
 	afterAll(async () => {
 		await connection.destroy();
@@ -54,9 +56,7 @@ describe("POST /auth/register", () => {
 			email: "robot@robo.mail",
 			password: "notARobot",
 		};
-		const _response = await request(app)
-			.post("/auth/register")
-			.send(userData);
+		await request(app).post("/auth/register").send(userData);
 
 		const userRepository = connection.getRepository(User);
 		const users = await userRepository.find();
@@ -72,6 +72,18 @@ describe("POST /auth/register", () => {
 			.post("/auth/register")
 			.send(userData);
 		expect(response.body.id).not.toBeNaN;
+	});
+	it("should have role set to customer", async () => {
+		const userData = {
+			name: "Robot",
+			email: "robot@robo.mail",
+			password: "notARobot",
+		};
+		await request(app).post("/auth/register").send(userData);
+		const userRepository = connection.getRepository(User);
+		const users = await userRepository.find();
+		expect(users[0]).toHaveProperty("role");
+		expect(users[0].role).toBe("customer");
 	});
 	describe("Incomplete input fields", () => {});
 });
