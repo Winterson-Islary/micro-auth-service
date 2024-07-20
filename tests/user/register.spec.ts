@@ -62,5 +62,16 @@ describe("POST /auth/register", () => {
 		const users = await userRepository.find();
 		expect(users).toHaveLength(1);
 	});
+	it("should return id of the created user", async () => {
+		const userData = {
+			name: "Robot",
+			email: "robot@robo.mail",
+			password: "notARobot",
+		};
+		const response = await request(app)
+			.post("/auth/register")
+			.send(userData);
+		expect(response.body.id).not.toBeNaN;
+	});
 	describe("Incomplete input fields", () => {});
 });

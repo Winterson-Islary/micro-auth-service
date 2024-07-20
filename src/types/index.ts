@@ -1,4 +1,5 @@
 import type { Request } from "express";
+import type { User } from "../entity/User";
 
 export type UserData = {
 	name: string;
@@ -10,5 +11,6 @@ export interface RegisterUserRequest extends Request {
 }
 
 export interface IUserService {
-	create({ name, email, password }: UserData): void;
+	create({ name, email, password }: UserData): Promise<User | null>;
+	get({ email }: { email: string }): Promise<User | null>;
 }
