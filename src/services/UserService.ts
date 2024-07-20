@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 import type { Repository } from "typeorm";
 import type { User } from "../entity/User";
-import type { IUserService, UserData } from "../types";
+import { type IUserService, Roles, type UserData } from "../types";
 
 export class UserService implements IUserService {
 	constructor(private userRepository: Repository<User>) {}
@@ -11,7 +11,7 @@ export class UserService implements IUserService {
 				name,
 				email,
 				password,
-				role: "customer",
+				role: Roles.CUSTOMER,
 			});
 		} catch (_err) {
 			const customError = createHttpError(500, "failed to register user");
