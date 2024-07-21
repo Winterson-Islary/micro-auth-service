@@ -100,5 +100,20 @@ describe("POST /auth/register", () => {
 		expect(users[0].password).toHaveLength(60);
 		expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
 	});
+	it("should return statuscode 400 if email is already in use", async () => {
+		const userData = {
+			name: "Robot",
+			email: "robot@robo.mail",
+			password: "notARobot",
+		};
+		const userRepository = connection.getRepository(User);
+		await userRepository.save({ ...userData, role: Roles.CUSTOMER });
+		const response = await request(app)
+			.post("/auth/register")
+			.send(userData);
+		const users = await userRepository.find();
+		expect(response.statusCode).toBe(400);
+		expect(users).toHaveLength(1);
+	});
 	describe("Incomplete input fields", () => {});
 });

@@ -7,6 +7,13 @@ import { type IUserService, Roles, SaltRounds, type UserData } from "../types";
 export class UserService implements IUserService {
 	constructor(private userRepository: Repository<User>) {}
 	async create({ name, email, password }: UserData): Promise<User | null> {
+		const userExist = await this.userRepository.findOne({
+			where: { email: email },
+		});
+		if (userExist) {
+			const err = createHttpError(400, "email already in use");
+			throw err;
+		}
 		const hashedPassword = await bcrypt.hash(password, SaltRounds);
 		try {
 			return await this.userRepository.save({
