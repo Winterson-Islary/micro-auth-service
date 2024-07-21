@@ -86,5 +86,17 @@ describe("POST /auth/register", () => {
 		expect(users[0]).toHaveProperty("role");
 		expect(users[0].role).toBe(Roles.CUSTOMER);
 	});
+	it("should store hashed password in the database", async () => {
+		const userData = {
+			name: "Robot",
+			email: "robot@robo.mail",
+			password: "notARobot",
+		};
+		await request(app).post("/auth/register").send(userData);
+		const userRepository = connection.getRepository(User);
+		const users = await userRepository.find();
+
+		expect(users[0].password).not.toBe(userData.password);
+	});
 	describe("Incomplete input fields", () => {});
 });
