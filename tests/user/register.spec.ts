@@ -131,4 +131,18 @@ describe("POST /auth/register", () => {
 			expect(users).toHaveLength(0);
 		});
 	});
+	describe("Proper input field format", () => {
+		it("should remove leading and trailing whitespace from inputs", async () => {
+			const userData = {
+				name: "Robot",
+				email: " robot@robo.mail ",
+				password: "notARobot",
+			};
+			await request(app).post("/auth/register").send(userData);
+			const userRepository = connection.getRepository(User);
+			const users = await userRepository.find();
+			expect(users).toHaveLength(1);
+			expect(users[0].email).toBe("robot@robo.mail");
+		});
+	});
 });
