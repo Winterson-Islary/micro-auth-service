@@ -14,7 +14,8 @@ const userRegisterSchema = z.object({
 			.email("not a valid email"),
 		password: z
 			.string({ required_error: "password cannot be empty" })
-			.trim(),
+			.trim()
+			.min(8),
 	}),
 });
 

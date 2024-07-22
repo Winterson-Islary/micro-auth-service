@@ -144,5 +144,27 @@ describe("POST /auth/register", () => {
 			expect(users).toHaveLength(1);
 			expect(users[0].email).toBe("robot@robo.mail");
 		});
+		it("should return 400 on invalid email", async () => {
+			const userData = {
+				name: "Robot",
+				email: "invalidEmail",
+				password: "notARobot",
+			};
+			const response = await request(app)
+				.post("/auth/register")
+				.send(userData);
+			expect(response.statusCode).toBe(400);
+		});
+		it("should return 400 on password length less than 8 characters", async () => {
+			const userData = {
+				name: "Robot",
+				email: " robot@robo.mail ",
+				password: "1234567",
+			};
+			const response = await request(app)
+				.post("/auth/register")
+				.send(userData);
+			expect(response.statusCode).toBe(400);
+		});
 	});
 });
