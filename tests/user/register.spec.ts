@@ -115,5 +115,17 @@ describe("POST /auth/register", () => {
 		expect(response.statusCode).toBe(400);
 		expect(users).toHaveLength(1);
 	});
-	describe("Incomplete input fields", () => {});
+	describe("Incomplete input fields", () => {
+		it("should return status code 400 on missing inputs", async () => {
+			const userData = {
+				name: "",
+				email: "",
+				password: "",
+			};
+			const response = await request(app)
+				.post("/auth/register")
+				.send(userData);
+			expect(response.statusCode).toBe(400);
+		});
+	});
 });

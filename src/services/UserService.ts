@@ -2,11 +2,15 @@ import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
 import type { Repository } from "typeorm";
 import type { User } from "../entity/User";
-import { type IUserService, Roles, SaltRounds, type UserData } from "../types";
+import { Constants, type IUserService, Roles, type UserData } from "../types";
 
 export class UserService implements IUserService {
 	constructor(private userRepository: Repository<User>) {}
 	async create({ name, email, password }: UserData): Promise<User | null> {
+		if (!name || !email || !password) {
+			const err = createHttpError(400, "missing input fields");
+			throw err;
+		}
 		const userExist = await this.userRepository.findOne({
 			where: { email: email },
 		});
@@ -14,7 +18,10 @@ export class UserService implements IUserService {
 			const err = createHttpError(400, "email already in use");
 			throw err;
 		}
-		const hashedPassword = await bcrypt.hash(password, SaltRounds);
+		const hashedPassword = await bcrypt.hash(
+			password,
+			Constants.saltRounds,
+		);
 		try {
 			return await this.userRepository.save({
 				name,

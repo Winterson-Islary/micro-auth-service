@@ -22,4 +22,6 @@ export const Roles = {
 	MANAGER: "manager",
 } as const;
 
-export const SaltRounds = 10 as const;
+const saltRounds = 10;
+
+export const Constants = { saltRounds } as const;
