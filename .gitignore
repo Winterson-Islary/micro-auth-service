@@ -81,6 +81,8 @@ web_modules/
 .env.production
 .env.development
 .env.test
+# keys
+certs/
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache

@@ -1,4 +1,8 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { NextFunction, Response } from "express";
+import createHttpError from "http-errors";
+import jwt from "jsonwebtoken";
 import type { Logger } from "winston";
 import type { User } from "../entity/User";
 import type {
@@ -38,17 +42,41 @@ export class AuthController {
 	async login(req: LoginUserRequest, res: Response, next: NextFunction) {
 		const { email, password } = req.body;
 		try {
-			const _result = await this.userService.login({ email, password });
-			const temporary_accessToken =
-				"ninetyninetimesidontlikeit.helloworldthisisafunnybusiness.dontlikeithere";
-			const temporary_refreshToken =
-				"ninetyninetimesidontlikeit.helloworldthisisafunnybusiness.dontlikeithere";
-			res.cookie("ACCESS_TOKEN", temporary_accessToken, {
+			const user = await this.userService.login({ email, password });
+			const payload = {
+				sub: String(user?.id),
+				role: user?.role,
+			};
+			let privateKey: Buffer;
+			try {
+				privateKey = fs.readFileSync(
+					path.join(__dirname, "../../certs/private.pem"),
+				);
+			} catch (_err) {
+				const customError = createHttpError(
+					500,
+					"error reading private key",
+				);
+				next(customError);
+				return;
+			}
+
+			const accessToken = jwt.sign(payload, privateKey, {
+				algorithm: "RS256",
+				expiresIn: "1h",
+				issuer: "auth-service",
+			});
+			const refreshToken = jwt.sign(payload, privateKey, {
+				algorithm: "RS256",
+				expiresIn: "30d",
+				issuer: "auth-service",
+			});
+			res.cookie("ACCESS_TOKEN", accessToken, {
 				httpOnly: true,
 				sameSite: "strict",
 				secure: true,
 			});
-			res.cookie("REFRESH_TOKEN", temporary_refreshToken, {
+			res.cookie("REFRESH_TOKEN", refreshToken, {
 				httpOnly: true,
 				sameSite: "strict",
 				secure: true,
