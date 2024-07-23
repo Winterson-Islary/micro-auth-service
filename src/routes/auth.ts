@@ -4,6 +4,7 @@ import logger from "../configs/logger";
 import { AuthController } from "../controllers/AuthController";
 import { User } from "../entity/User";
 import { UserService } from "../services/UserService";
+import { ValidateUserLogin } from "../validators/login-validator";
 import { ValidateUserRegistration } from "../validators/register-validator";
 
 const router = Router();
@@ -13,5 +14,7 @@ const authController = new AuthController(userService, logger);
 router.post("/register", ValidateUserRegistration, (req, res, next) =>
 	authController.register(req, res, next),
 ); // Controller.register is inside a callback because of the ambiguous binding of "this" keyword.
-
+router.post("/login", ValidateUserLogin, (req, res, next) =>
+	authController.login(req, res, next),
+);
 export default router;

@@ -30,10 +30,29 @@ export class UserService implements IUserService {
 			throw customError;
 		}
 	}
-	async get({ email }: { email: string }): Promise<User | null> {
-		return await this.userRepository
+	async login({
+		email,
+		password,
+	}: { email: string; password: string }): Promise<User | null> {
+		const userDetails = await this.userRepository
 			.createQueryBuilder("user")
 			.where("user.email = :email", { email: email })
 			.getOne();
+		if (!userDetails) {
+			const customError = createHttpError(
+				500,
+				`user with ${email} does not exist`,
+			);
+			throw customError;
+		}
+		const validPassword = await bcrypt.compare(
+			password,
+			userDetails?.password,
+		);
+		if (!validPassword) {
+			const customError = createHttpError(401, "invalid credentials");
+			throw customError;
+		}
+		return userDetails;
 	}
 }
