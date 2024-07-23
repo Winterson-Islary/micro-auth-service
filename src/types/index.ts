@@ -9,10 +9,16 @@ export type UserData = {
 export interface RegisterUserRequest extends Request {
 	body: UserData;
 }
+export interface LoginUserRequest extends Request {
+	body: Omit<UserData, "name">;
+}
 
 export interface IUserService {
 	create({ name, email, password }: UserData): Promise<User | null>;
-	get({ email }: { email: string }): Promise<User | null>;
+	login({
+		email,
+		password,
+	}: { email: string; password: string }): Promise<User | null>;
 }
 
 // CONSTANTS
