@@ -4,6 +4,7 @@ import type { NextFunction, Response } from "express";
 import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
 import type { Logger } from "winston";
+import { Config } from "../configs/envConfig";
 import type { User } from "../entity/User";
 import type {
 	IUserService,
@@ -66,20 +67,26 @@ export class AuthController {
 				expiresIn: "1h",
 				issuer: "auth-service",
 			});
-			const refreshToken = jwt.sign(payload, privateKey, {
-				algorithm: "RS256",
-				expiresIn: "30d",
-				issuer: "auth-service",
-			});
+			const refreshToken = jwt.sign(
+				payload,
+				String(Config.JWT_REFRESH_KEY),
+				{
+					algorithm: "HS256",
+					expiresIn: "30d",
+					issuer: "auth-service",
+				},
+			);
 			res.cookie("ACCESS_TOKEN", accessToken, {
 				httpOnly: true,
 				sameSite: "strict",
 				secure: true,
+				maxAge: 1000 * 60 * 60, // 1hr
 			});
 			res.cookie("REFRESH_TOKEN", refreshToken, {
 				httpOnly: true,
 				sameSite: "strict",
 				secure: true,
+				maxAge: 1000 * 60 * 60 * 24 * 30, // 30days
 			});
 			this.logger.info("user logged in successfully");
 			return res
