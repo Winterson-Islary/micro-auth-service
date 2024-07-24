@@ -3,6 +3,7 @@ import request from "supertest";
 import type { DataSource } from "typeorm";
 import app from "../../src/app";
 import { AppDataSource } from "../../src/configs/data-source";
+import { RefreshToken } from "../../src/entity/RefreshToken";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/types";
 import { truncateTables } from "../utils/dbUtils";
@@ -117,7 +118,29 @@ describe("POST /auth/register", () => {
 		expect(response.statusCode).toBe(400);
 		expect(users).toHaveLength(1);
 	});
+	it("should save Refresh Token to Database", async () => {
+		const userData = {
+			name: "Robot",
+			email: "robot@robo.mail",
+			password: "notARobot",
+		};
+		const response = await request(app)
+			.post("/auth/register")
+			.send(userData);
+		await request(app)
+			.post("/auth/login")
+			.send({ email: userData.email, password: userData.password });
 
+		const refreshTokenRepository = connection.getRepository(RefreshToken);
+		const refreshTokens = await refreshTokenRepository
+			.createQueryBuilder()
+			.where("RefreshToken.userId = :userId", {
+				userId: response.body.id,
+			})
+			.getMany();
+
+		expect(refreshTokens.length).toBe(1);
+	});
 	describe("Incomplete input fields", () => {
 		it("should return status code 400 on missing inputs", async () => {
 			const userData = {

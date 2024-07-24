@@ -4,7 +4,9 @@ import type { NextFunction, Response } from "express";
 import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
 import type { Logger } from "winston";
+import { AppDataSource } from "../configs/data-source";
 import { Config } from "../configs/envConfig";
+import { RefreshToken } from "../entity/RefreshToken";
 import type { User } from "../entity/User";
 import type {
 	IUserService,
@@ -44,6 +46,11 @@ export class AuthController {
 		const { email, password } = req.body;
 		try {
 			const user = await this.userService.login({ email, password });
+			if (!user) {
+				const customError = createHttpError(401, "user does not exist");
+				next(customError);
+				return;
+			}
 			const payload = {
 				sub: String(user?.id),
 				role: user?.role,
@@ -67,6 +74,14 @@ export class AuthController {
 				expiresIn: "1h",
 				issuer: "auth-service",
 			});
+			const ThirtyDays = 1000 * 60 * 60 * 24 * 30;
+			const refreshTokenRepository =
+				AppDataSource.getRepository(RefreshToken);
+			const newRefreshToken = await refreshTokenRepository.save({
+				user: user,
+				expiresAt: new Date(Date.now() + ThirtyDays),
+			});
+
 			const refreshToken = jwt.sign(
 				payload,
 				String(Config.JWT_REFRESH_KEY),
@@ -74,6 +89,7 @@ export class AuthController {
 					algorithm: "HS256",
 					expiresIn: "30d",
 					issuer: "auth-service",
+					jwtid: String(newRefreshToken.id),
 				},
 			);
 			res.cookie("ACCESS_TOKEN", accessToken, {
