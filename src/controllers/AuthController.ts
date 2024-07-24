@@ -1,14 +1,10 @@
-import fs from "node:fs";
-import path from "node:path";
 import type { NextFunction, Response } from "express";
 import createHttpError from "http-errors";
-import jwt from "jsonwebtoken";
 import type { Logger } from "winston";
 import { AppDataSource } from "../configs/data-source";
-import { Config } from "../configs/envConfig";
 import { RefreshToken } from "../entity/RefreshToken";
-import type { User } from "../entity/User";
 import type {
+	ITokenService,
 	IUserService,
 	LoginUserRequest,
 	RegisterUserRequest,
@@ -17,8 +13,14 @@ import type {
 export class AuthController {
 	userService: IUserService;
 	logger: Logger;
-	constructor(userService: IUserService, logger: Logger) {
+	tokenService: ITokenService;
+	constructor(
+		userService: IUserService,
+		logger: Logger,
+		tokenService: ITokenService,
+	) {
 		this.userService = userService;
+		this.tokenService = tokenService;
 		this.logger = logger;
 	}
 	async register(
@@ -55,43 +57,15 @@ export class AuthController {
 				sub: String(user?.id),
 				role: user?.role,
 			};
-			let privateKey: Buffer;
-			try {
-				privateKey = fs.readFileSync(
-					path.join(__dirname, "../../certs/private.pem"),
-				);
-			} catch (_err) {
-				const customError = createHttpError(
-					500,
-					"error reading private key",
-				);
-				next(customError);
-				return;
-			}
+			const accessToken = this.tokenService.generateAccessToken(payload);
 
-			const accessToken = jwt.sign(payload, privateKey, {
-				algorithm: "RS256",
-				expiresIn: "1h",
-				issuer: "auth-service",
-			});
-			const ThirtyDays = 1000 * 60 * 60 * 24 * 30;
-			const refreshTokenRepository =
-				AppDataSource.getRepository(RefreshToken);
-			const newRefreshToken = await refreshTokenRepository.save({
-				user: user,
-				expiresAt: new Date(Date.now() + ThirtyDays),
+			const newRefreshToken =
+				await this.tokenService.persistRefreshToken(user);
+			const refreshToken = this.tokenService.generateRefreshToken({
+				...payload,
+				id: newRefreshToken.id,
 			});
 
-			const refreshToken = jwt.sign(
-				payload,
-				String(Config.JWT_REFRESH_KEY),
-				{
-					algorithm: "HS256",
-					expiresIn: "30d",
-					issuer: "auth-service",
-					jwtid: String(newRefreshToken.id),
-				},
-			);
 			res.cookie("ACCESS_TOKEN", accessToken, {
 				httpOnly: true,
 				sameSite: "strict",

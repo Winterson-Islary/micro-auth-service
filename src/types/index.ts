@@ -1,4 +1,6 @@
 import type { Request } from "express";
+import type { JwtPayload } from "jsonwebtoken";
+import type { RefreshToken } from "../entity/RefreshToken";
 import type { User } from "../entity/User";
 
 export type UserData = {
@@ -20,7 +22,11 @@ export interface IUserService {
 		password,
 	}: { email: string; password: string }): Promise<User | null>;
 }
-
+export interface ITokenService {
+	generateAccessToken(payload: JwtPayload): string;
+	generateRefreshToken(payload: JwtPayload): string;
+	persistRefreshToken(user: User): Promise<RefreshToken>;
+}
 // CONSTANTS
 export const Roles = {
 	CUSTOMER: "customer",
