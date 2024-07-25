@@ -1,4 +1,4 @@
-import type { NextFunction, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import type { Logger } from "winston";
 import { AppDataSource } from "../configs/data-source";
@@ -86,5 +86,9 @@ export class AuthController {
 			next(err);
 			return;
 		}
+	}
+
+	async whoami(_req: Request, res: Response, _next: NextFunction) {
+		return res.status(200).json({});
 	}
 }

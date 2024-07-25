@@ -21,4 +21,7 @@ router.post("/register", ValidateUserRegistration, (req, res, next) =>
 router.post("/login", ValidateUserLogin, (req, res, next) =>
 	authController.login(req, res, next),
 );
+router.get("/whoami", (req, res, next) =>
+	authController.whoami(req, res, next),
+);
 export default router;
