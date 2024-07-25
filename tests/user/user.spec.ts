@@ -28,7 +28,14 @@ describe("GET /auth/whoami", () => {
 
 	describe("On valid input fields", () => {
 		it("should return status code 200", async () => {
-			const response = await request(app).get("/auth/whoami").send();
+			const mockAccessToken = jwks.token({
+				sub: "1",
+				role: Roles.CUSTOMER,
+			});
+			const response = await request(app)
+				.get("/auth/whoami")
+				.set("Cookie", [`ACCESS_TOKEN=${mockAccessToken};`])
+				.send();
 			expect(response.statusCode).toBe(200);
 		});
 		it("should return the user data", async () => {

@@ -11,6 +11,7 @@ const {
 	DB_PASSWORD,
 	DB_USERNAME,
 	JWT_REFRESH_KEY,
+	JWKS_URI,
 } = process.env;
 
 export const Config = {
@@ -22,4 +23,5 @@ export const Config = {
 	DB_PASSWORD,
 	DB_USERNAME,
 	JWT_REFRESH_KEY,
+	JWKS_URI,
 } as const;

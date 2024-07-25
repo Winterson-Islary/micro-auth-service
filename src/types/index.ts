@@ -8,6 +8,12 @@ export type UserData = {
 	email: string;
 	password: string;
 };
+export interface RequestAuth extends Request {
+	auth: {
+		sub: string;
+		role: string;
+	};
+}
 export interface RegisterUserRequest extends Request {
 	body: UserData;
 }
@@ -21,6 +27,7 @@ export interface IUserService {
 		email,
 		password,
 	}: { email: string; password: string }): Promise<User | null>;
+	findById(id: number): Promise<User | null>;
 }
 export interface ITokenService {
 	generateAccessToken(payload: JwtPayload): string;

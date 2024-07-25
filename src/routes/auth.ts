@@ -4,8 +4,10 @@ import logger from "../configs/logger";
 import { AuthController } from "../controllers/AuthController";
 import { RefreshToken } from "../entity/RefreshToken";
 import { User } from "../entity/User";
+import authenticate from "../middlewares/authenticate";
 import { TokenService } from "../services/TokenService";
 import { UserService } from "../services/UserService";
+import type { RequestAuth } from "../types";
 import { ValidateUserLogin } from "../validators/login-validator";
 import { ValidateUserRegistration } from "../validators/register-validator";
 
@@ -21,7 +23,7 @@ router.post("/register", ValidateUserRegistration, (req, res, next) =>
 router.post("/login", ValidateUserLogin, (req, res, next) =>
 	authController.login(req, res, next),
 );
-router.get("/whoami", (req, res, next) =>
-	authController.whoami(req, res, next),
+router.get("/whoami", authenticate, (req, res, next) =>
+	authController.whoami(req as RequestAuth, res, next),
 );
 export default router;

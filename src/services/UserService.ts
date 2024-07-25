@@ -55,4 +55,12 @@ export class UserService implements IUserService {
 		}
 		return userDetails;
 	}
+
+	async findById(id: number) {
+		return await this.userRepository.findOne({
+			where: {
+				id,
+			},
+		});
+	}
 }

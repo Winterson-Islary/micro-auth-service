@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import cookieParser from "cookie-parser";
 import express, {
 	type NextFunction,
 	type Response,
@@ -10,6 +11,7 @@ import authRouter from "./routes/auth";
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.get("/", async (_req, res) => {
 	res.status(200).send("Hello from auth service");
 });

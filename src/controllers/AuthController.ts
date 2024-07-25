@@ -8,6 +8,7 @@ import type {
 	IUserService,
 	LoginUserRequest,
 	RegisterUserRequest,
+	RequestAuth,
 } from "../types";
 
 export class AuthController {
@@ -88,7 +89,9 @@ export class AuthController {
 		}
 	}
 
-	async whoami(_req: Request, res: Response, _next: NextFunction) {
-		return res.status(200).json({});
+	async whoami(req: RequestAuth, res: Response, _next: NextFunction) {
+		const id = Number(req.auth.sub);
+		const user = await this.userService.findById(id);
+		return res.status(200).json(user);
 	}
 }
