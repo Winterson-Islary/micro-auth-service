@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import type { Logger } from "winston";
 import { AppDataSource } from "../configs/data-source";
 import { RefreshToken } from "../entity/RefreshToken";
+import { User } from "../entity/User";
 import type {
 	ITokenService,
 	IUserService,
@@ -89,9 +90,16 @@ export class AuthController {
 		}
 	}
 
-	async whoami(req: RequestAuth, res: Response, _next: NextFunction) {
+	async whoami(req: RequestAuth, res: Response, next: NextFunction) {
 		const id = Number(req.auth.sub);
-		const user = await this.userService.findById(id);
-		return res.status(200).json(user);
+		try {
+			const user = await this.userService.findById(id);
+			return res
+				.status(200)
+				.json({ id: user?.id, role: user?.role, name: user?.name });
+		} catch (error) {
+			next(error);
+			return;
+		}
 	}
 }

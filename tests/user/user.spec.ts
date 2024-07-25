@@ -28,9 +28,19 @@ describe("GET /auth/whoami", () => {
 
 	describe("On valid input fields", () => {
 		it("should return status code 200", async () => {
-			const mockAccessToken = jwks.token({
-				sub: "1",
+			const userData = {
+				name: "Robot",
+				email: "robot@robo.mail",
+				password: "notARobot",
+			};
+			const userRepository = connection.getRepository(User);
+			const data = await userRepository.save({
+				...userData,
 				role: Roles.CUSTOMER,
+			});
+			const mockAccessToken = jwks.token({
+				sub: String(data.id),
+				role: data.role,
 			});
 			const response = await request(app)
 				.get("/auth/whoami")
@@ -38,7 +48,7 @@ describe("GET /auth/whoami", () => {
 				.send();
 			expect(response.statusCode).toBe(200);
 		});
-		it("should return the user data", async () => {
+		it("should return the user data and without password", async () => {
 			const userData = {
 				name: "Robot",
 				email: "robot@robo.mail",
@@ -59,6 +69,7 @@ describe("GET /auth/whoami", () => {
 				.send();
 
 			expect(response.body.id).toBe(data.id);
+			expect(response.body).not.toHaveProperty("password");
 		});
 	});
 });

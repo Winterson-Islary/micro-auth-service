@@ -57,10 +57,15 @@ export class UserService implements IUserService {
 	}
 
 	async findById(id: number) {
-		return await this.userRepository.findOne({
+		const user = await this.userRepository.findOne({
 			where: {
 				id,
 			},
 		});
+		if (!user) {
+			const customError = createHttpError(500, "unable to find user");
+			throw customError;
+		}
+		return user;
 	}
 }
