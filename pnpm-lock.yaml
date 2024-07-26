@@ -38,6 +38,9 @@ importers:
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14
+      rsa-pem-to-jwk:
+        specifier: ^1.1.3
+        version: 1.1.3
       typeorm:
         specifier: 0.3.20
         version: 0.3.20(pg@8.12.0)(ts-node@10.9.1(@types/node@16.18.101)(typescript@4.5.2))
@@ -1802,6 +1805,10 @@ packages:
     resolution: {integrity: sha512-AqZtDUWOMKs1G/8lwylVjrdYgqA4d9nu8hc+0gzRxlDb1I10+FHBGMXs6aiQHFdCUUlqH99MUMuLfzWDNDtfxw==}
     deprecated: This package is no longer supported.
 
+  object-assign@2.1.1:
+    resolution: {integrity: sha512-CdsOUYIh5wIiozhJ3rLQgmUTgcyzFwZZrqhkKhODMoGtPKM+wt0h0CNIoauJWMsS9822EdzPsF/6mb4nLvPN5g==}
+    engines: {node: '>=0.10.0'}
+
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
@@ -1827,6 +1834,9 @@ packages:
   onetime@6.0.0:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
+
+  optimist@0.3.7:
+    resolution: {integrity: sha512-TCx0dXQzVtSCg2OgY/bO9hjM9cV4XYx09TVK+s3+FhkjT6LovsLe+pPMzpWf+6yXK/hUizs2gUoTw3jHM0VaTQ==}
 
   p-limit@2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
@@ -2041,6 +2051,13 @@ packages:
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     deprecated: Rimraf versions prior to v4 are no longer supported
+    hasBin: true
+
+  rsa-pem-to-jwk@1.1.3:
+    resolution: {integrity: sha512-ZlVavEvTnD8Rzh/pdB8NH4VF5GNEtF6biGQcTtC4GKFMsbZR08oHtOYefbhCN+JnJIuMItiCDCMycdcMrw6blA==}
+
+  rsa-unpack@0.0.6:
+    resolution: {integrity: sha512-HRrl8GHjjPziPFRDJPq/v5OxZ3IPdksV5h3cime/oHgcgM1k1toO5OdtzClgBqRf5dF6IgptOB0g/zFb0w5zQw==}
     hasBin: true
 
   safe-buffer@5.2.1:
@@ -2440,6 +2457,10 @@ packages:
   winston@3.13.1:
     resolution: {integrity: sha512-SvZit7VFNvXRzbqGHsv5KSmgbEYR5EiQfDAL9gxYkRqa934Hnk++zze0wANKtMHcy/gI4W/3xmSDwlhf865WGw==}
     engines: {node: '>= 12.0.0'}
+
+  wordwrap@0.0.3:
+    resolution: {integrity: sha512-1tMA907+V4QmxV7dbRvb4/8MaRALK6q9Abid3ndMYnbyo8piisCmeONVqVSXqQA3KaP4SLt5b7ud6E2sqP8TFw==}
+    engines: {node: '>=0.4.0'}
 
   wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
@@ -4568,6 +4589,8 @@ snapshots:
       gauge: 3.0.2
       set-blocking: 2.0.0
 
+  object-assign@2.1.1: {}
+
   object-assign@4.1.1: {}
 
   object-inspect@1.13.2: {}
@@ -4591,6 +4614,10 @@ snapshots:
   onetime@6.0.0:
     dependencies:
       mimic-fn: 4.0.0
+
+  optimist@0.3.7:
+    dependencies:
+      wordwrap: 0.0.3
 
   p-limit@2.3.0:
     dependencies:
@@ -4776,6 +4803,15 @@ snapshots:
   rimraf@3.0.2:
     dependencies:
       glob: 7.2.3
+
+  rsa-pem-to-jwk@1.1.3:
+    dependencies:
+      object-assign: 2.1.1
+      rsa-unpack: 0.0.6
+
+  rsa-unpack@0.0.6:
+    dependencies:
+      optimist: 0.3.7
 
   safe-buffer@5.2.1: {}
 
@@ -5148,6 +5184,8 @@ snapshots:
       stack-trace: 0.0.10
       triple-beam: 1.4.1
       winston-transport: 4.7.1
+
+  wordwrap@0.0.3: {}
 
   wrap-ansi@7.0.0:
     dependencies:
