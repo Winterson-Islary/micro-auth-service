@@ -71,5 +71,19 @@ describe("GET /auth/whoami", () => {
 			expect(response.body.id).toBe(data.id);
 			expect(response.body).not.toHaveProperty("password");
 		});
+		it("should return 401 status code in case of missing access token", async () => {
+			const userData = {
+				name: "Robot",
+				email: "robot@robo.mail",
+				password: "notARobot",
+			};
+			const userRepository = connection.getRepository(User);
+			await userRepository.save({
+				...userData,
+				role: Roles.CUSTOMER,
+			});
+			const response = await request(app).get("/auth/whoami").send();
+			expect(response.statusCode).toBe(401);
+		});
 	});
 });

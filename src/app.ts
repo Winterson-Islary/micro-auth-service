@@ -19,7 +19,7 @@ app.get("/", async (_req, res) => {
 app.use("/auth", authRouter);
 app.use((err: HttpError, _req: Request, res: Response, _next: NextFunction) => {
 	logger.error(err.message);
-	const statusCode = err.statusCode || 500;
+	const statusCode = err.statusCode || err.status || 500;
 	res.status(statusCode).json({
 		errors: [
 			{
