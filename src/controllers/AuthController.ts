@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
+import type { JwtPayload } from "jsonwebtoken";
 import type { Logger } from "winston";
 import { AppDataSource } from "../configs/data-source";
 import { RefreshToken } from "../entity/RefreshToken";
@@ -8,6 +9,7 @@ import type {
 	ITokenService,
 	IUserService,
 	LoginUserRequest,
+	RefreshAuth,
 	RegisterUserRequest,
 	RequestAuth,
 } from "../types";
@@ -55,7 +57,7 @@ export class AuthController {
 				next(customError);
 				return;
 			}
-			const payload = {
+			const payload: JwtPayload = {
 				sub: String(user?.id),
 				role: user?.role,
 			};
@@ -99,6 +101,57 @@ export class AuthController {
 				.json({ id: user?.id, role: user?.role, name: user?.name });
 		} catch (error) {
 			next(error);
+			return;
+		}
+	}
+
+	async refresh(req: RefreshAuth, res: Response, next: NextFunction) {
+		try {
+			if (req.auth.isRevoked) {
+				const customError = createHttpError(
+					401,
+					"refresh token is revoked",
+				);
+				throw customError;
+			}
+			const id = Number(req.auth.sub);
+			const user = await this.userService.findById(id);
+			if (!user) {
+				const customError = createHttpError(
+					401,
+					`could not find user with id: ${id}`,
+				);
+				throw customError;
+			}
+			const payload: JwtPayload = {
+				sub: req.auth.sub,
+				role: req.auth.role,
+			};
+			const accessToken = this.tokenService.generateAccessToken(payload);
+			const newRefreshToken =
+				await this.tokenService.persistRefreshToken(user);
+			const refreshToken = this.tokenService.generateRefreshToken({
+				...payload,
+				id: newRefreshToken.id,
+			});
+			res.cookie("ACCESS_TOKEN", accessToken, {
+				httpOnly: true,
+				sameSite: "strict",
+				secure: true,
+				maxAge: 1000 * 60 * 60, // 1hr
+			});
+			res.cookie("REFRESH_TOKEN", refreshToken, {
+				httpOnly: true,
+				sameSite: "strict",
+				secure: true,
+				maxAge: 1000 * 60 * 60 * 24 * 30, // 30days
+			});
+			this.logger.info("token refresh successful");
+			return res
+				.status(200)
+				.json({ message: "access token regenerated successfully" });
+		} catch (err) {
+			next(err);
 			return;
 		}
 	}

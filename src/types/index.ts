@@ -14,6 +14,13 @@ export interface RequestAuth extends Request {
 		role: string;
 	};
 }
+export interface RefreshAuth extends Request {
+	auth: {
+		sub: string;
+		role: string;
+		isRevoked: boolean;
+	};
+}
 export interface RegisterUserRequest extends Request {
 	body: UserData;
 }

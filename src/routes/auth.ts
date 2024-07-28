@@ -7,8 +7,9 @@ import { User } from "../entity/User";
 import authenticate from "../middlewares/authenticate";
 import { TokenService } from "../services/TokenService";
 import { UserService } from "../services/UserService";
-import type { RequestAuth } from "../types";
+import type { RefreshAuth, RequestAuth } from "../types";
 import { ValidateUserLogin } from "../validators/login-validator";
+import RefreshTokenValidator from "../validators/refresh-validator";
 import { ValidateUserRegistration } from "../validators/register-validator";
 
 const router = Router();
@@ -26,4 +27,7 @@ router.post("/login", ValidateUserLogin, (req, res, next) =>
 router.get("/whoami", authenticate, (req, res, next) =>
 	authController.whoami(req as RequestAuth, res, next),
 );
+router.post("/refresh", RefreshTokenValidator, (req, res, next) => {
+	authController.refresh(req as RefreshAuth, res, next);
+});
 export default router;
