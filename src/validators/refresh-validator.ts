@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { Request } from "express";
 import { expressjwt } from "express-jwt";
 import { AppDataSource } from "../configs/data-source";
 import { Config } from "../configs/envConfig";

@@ -5,6 +5,7 @@ import { AuthController } from "../controllers/AuthController";
 import { RefreshToken } from "../entity/RefreshToken";
 import { User } from "../entity/User";
 import authenticate from "../middlewares/authenticate";
+import getRefreshToken from "../middlewares/getRefreshToken";
 import { TokenService } from "../services/TokenService";
 import { UserService } from "../services/UserService";
 import type { RefreshAuth, RequestAuth } from "../types";
@@ -29,5 +30,8 @@ router.get("/whoami", authenticate, (req, res, next) =>
 );
 router.post("/refresh", RefreshTokenValidator, (req, res, next) => {
 	authController.refresh(req as RefreshAuth, res, next);
+});
+router.post("/logout", authenticate, getRefreshToken, (req, res, next) => {
+	authController.logout(req as RefreshAuth, res, next);
 });
 export default router;
