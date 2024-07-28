@@ -130,6 +130,8 @@ export class AuthController {
 			const accessToken = this.tokenService.generateAccessToken(payload);
 			const newRefreshToken =
 				await this.tokenService.persistRefreshToken(user);
+
+			await this.tokenService.deleteRefreshToken(Number(req.auth.id));
 			const refreshToken = this.tokenService.generateRefreshToken({
 				...payload,
 				id: newRefreshToken.id,

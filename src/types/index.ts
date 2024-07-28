@@ -16,6 +16,7 @@ export interface RequestAuth extends Request {
 }
 export interface RefreshAuth extends Request {
 	auth: {
+		id?: string;
 		sub: string;
 		role: string;
 		isRevoked: boolean;
@@ -40,6 +41,7 @@ export interface ITokenService {
 	generateAccessToken(payload: JwtPayload): string;
 	generateRefreshToken(payload: JwtPayload): string;
 	persistRefreshToken(user: User): Promise<RefreshToken>;
+	deleteRefreshToken(id: number): Promise<void>;
 }
 // CONSTANTS
 export const Roles = {
