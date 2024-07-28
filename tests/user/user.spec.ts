@@ -1,3 +1,4 @@
+import type { IncomingHttpHeaders } from "node:http";
 import createJWKSMock from "mock-jwks";
 import request from "supertest";
 import type { DataSource } from "typeorm";
@@ -84,6 +85,87 @@ describe("GET /auth/whoami", () => {
 			});
 			const response = await request(app).get("/auth/whoami").send();
 			expect(response.statusCode).toBe(401);
+		});
+	});
+});
+describe("POST /auth/refresh", () => {
+	let connection: DataSource;
+	beforeAll(async () => {
+		connection = await AppDataSource.initialize();
+	});
+	beforeEach(async () => {
+		// Truncating DB
+		await connection.dropDatabase();
+		await connection.synchronize();
+	});
+	afterAll(async () => {
+		await connection.destroy();
+	});
+	describe("On valid input fields", () => {
+		it("should return status 200 on success", async () => {
+			const userData = {
+				name: "Robot",
+				email: "robot@robo.mail",
+				password: "notARobot",
+			};
+			await request(app).post("/auth/register").send(userData);
+			const loginResponse = await request(app)
+				.post("/auth/login")
+				.send({ email: "robot@robo.mail", password: "notARobot" });
+			interface Headers extends IncomingHttpHeaders {
+				"set-cookie": string[];
+			}
+			let refreshToken: string | null = null;
+			const cookies =
+				(loginResponse.headers as Headers)["set-cookie"] || [];
+			for (const cookie of cookies) {
+				if (cookie.startsWith("REFRESH_TOKEN=")) {
+					refreshToken = cookie.split(";")[0].split("=")[1];
+				}
+			}
+
+			const refreshResponse = await request(app)
+				.post("/auth/refresh")
+				.set("Cookie", [`REFRESH_TOKEN=${refreshToken};`])
+				.send();
+
+			expect(refreshResponse.statusCode).toBe(200);
+		});
+		it("should return new access token on success", async () => {
+			const userData = {
+				name: "Robot",
+				email: "robot@robo.mail",
+				password: "notARobot",
+			};
+			await request(app).post("/auth/register").send(userData);
+			const loginResponse = await request(app)
+				.post("/auth/login")
+				.send({ email: "robot@robo.mail", password: "notARobot" });
+			interface Headers extends IncomingHttpHeaders {
+				"set-cookie": string[];
+			}
+			let accessToken: string | null = null;
+			let refreshToken: string | null = null;
+			const cookies =
+				(loginResponse.headers as Headers)["set-cookie"] || [];
+			for (const cookie of cookies) {
+				if (cookie.startsWith("REFRESH_TOKEN=")) {
+					refreshToken = cookie.split(";")[0].split("=")[1];
+				}
+			}
+
+			const refreshResponse = await request(app)
+				.post("/auth/refrsh")
+				.set("Cookie", [`REFRESH_TOKEN=${refreshToken};`])
+				.send();
+			const newCookies =
+				(refreshResponse.headers as Headers)["set-cookie"] || [];
+			for (const cookie of newCookies) {
+				if (cookie.startsWith("ACCESS_TOKEN=")) {
+					accessToken = cookie.split(";")[0].split("=")[1];
+				}
+			}
+			expect(accessToken).toBeDefined();
 		});
 	});
 });
