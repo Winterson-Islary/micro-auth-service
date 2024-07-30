@@ -14,6 +14,6 @@ export const AppDataSource = new DataSource({
 	synchronize: false, // Should only be true in development.
 	logging: false,
 	entities: [User, RefreshToken],
-	migrations: [],
+	migrations: ["src/migration/*.ts"],
 	subscribers: [],
 });

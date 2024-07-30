@@ -10,7 +10,9 @@
 		"format:fix": "biome check --write ./src",
 		"test": "jest --watch --runInBand",
 		"start": "ts-node src/index.ts",
-		"typeorm": "typeorm-ts-node-commonjs"
+		"migration:generate": "typeorm-ts-node-commonjs migration:generate",
+		"migration:run": "typeorm-ts-node-commonjs migration:run",
+		"migration:create": "typeorm-ts-node-commonjs migration:create"
 	},
 	"keywords": [],
 	"author": "Winterson S.",
@@ -37,9 +39,7 @@
 		"typescript": "4.5.2"
 	},
 	"lint-staged": {
-		"*.ts": [
-			"pnpm run format:fix"
-		]
+		"*.ts": ["pnpm run format:fix"]
 	},
 	"dependencies": {
 		"bcrypt": "^5.1.1",
