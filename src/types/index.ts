@@ -43,6 +43,16 @@ export interface ITokenService {
 	persistRefreshToken(user: User): Promise<RefreshToken>;
 	deleteRefreshToken(id: number): Promise<void>;
 }
+export type TenantData = {
+	name: string;
+	address: string;
+};
+export interface TenantRequest extends Request {
+	body: TenantData;
+}
+export interface ITenantService {
+	create({ name, address }: TenantData): Promise<void>;
+}
 // CONSTANTS
 export const Roles = {
 	CUSTOMER: "customer",
