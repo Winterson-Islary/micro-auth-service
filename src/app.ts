@@ -8,6 +8,7 @@ import express, {
 import type { HttpError } from "http-errors";
 import logger from "./configs/logger";
 import authRouter from "./routes/auth";
+import tenantRouter from "./routes/tenant";
 
 const app = express();
 app.use(express.static("public"));
@@ -17,6 +18,8 @@ app.get("/", async (_req, res) => {
 	res.status(200).send("Hello from auth service");
 });
 app.use("/auth", authRouter);
+app.use("/tenants", tenantRouter);
+
 app.use((err: HttpError, _req: Request, res: Response, _next: NextFunction) => {
 	logger.error(err.message);
 	const statusCode = err.statusCode || err.status || 500;
