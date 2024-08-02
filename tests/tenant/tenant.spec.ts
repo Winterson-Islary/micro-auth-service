@@ -3,6 +3,7 @@ import request from "supertest";
 import type { DataSource } from "typeorm";
 import app from "../../src/app";
 import { AppDataSource } from "../../src/configs/data-source";
+import { Tenant } from "../../src/entity/Tenant";
 
 describe("POST /tenants", () => {
 	let connection: DataSource;
@@ -28,6 +29,16 @@ describe("POST /tenants", () => {
 				.post("/tenants/")
 				.send(tenantData);
 			expect(response.statusCode).toBe(201);
+		});
+		it("Should create a tenant record in the database", async () => {
+			const tenantData = {
+				name: "Tenant",
+				address: "Tenant Address",
+			};
+			await request(app).post("/tenants/create").send(tenantData);
+			const tenantRepository = connection.getRepository(Tenant);
+			const tenants = await tenantRepository.find();
+			expect(tenants).toHaveLength(1);
 		});
 	});
 });
