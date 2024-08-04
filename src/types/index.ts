@@ -1,6 +1,7 @@
 import type { Request } from "express";
 import type { JwtPayload } from "jsonwebtoken";
 import type { RefreshToken } from "../entity/RefreshToken";
+import type { Tenant } from "../entity/Tenant";
 import type { User } from "../entity/User";
 
 export type UserData = {
@@ -50,8 +51,15 @@ export type TenantData = {
 export interface TenantRequest extends Request {
 	body: TenantData;
 }
+export type getTenantData = {
+	id: string;
+};
+export interface GetTenantRequest extends Request {
+	body: getTenantData;
+}
 export interface ITenantService {
 	create({ name, address }: TenantData): Promise<void>;
+	get(id: number): Promise<Tenant | null>;
 }
 // CONSTANTS
 export const Roles = {

@@ -17,4 +17,19 @@ export class TenantService implements ITenantService {
 			throw customError;
 		}
 	}
+	async get(id: number) {
+		try {
+			return await this.tenantRepository.findOne({
+				where: {
+					id,
+				},
+			});
+		} catch (_err) {
+			const customError = createHttpError(
+				401,
+				`failed to get tenant with id: ${id}`,
+			);
+			throw customError;
+		}
+	}
 }

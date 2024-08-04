@@ -6,7 +6,7 @@ import { Tenant } from "../entity/Tenant";
 import authenticate from "../middlewares/authenticate";
 import { canAccess } from "../middlewares/canAccess";
 import { TenantService } from "../services/TenantService";
-import { Roles, type TenantRequest } from "../types";
+import { type GetTenantRequest, Roles, type TenantRequest } from "../types";
 
 const router = Router();
 const tenantRepository = AppDataSource.getRepository(Tenant);
@@ -23,5 +23,8 @@ router.post(
 		tenantController.create(req as TenantRequest, res, next);
 	},
 );
+router.get("/get", authenticate, (req, res, next) => {
+	tenantController.get(req as GetTenantRequest, res, next);
+});
 
 export default router;

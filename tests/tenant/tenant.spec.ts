@@ -79,5 +79,21 @@ describe("POST /tenants", () => {
 			const tenants = await tenantRepository.find();
 			expect(tenants).toHaveLength(0);
 		});
+		it("Should return a tenant on valid id input", async () => {
+			const tenantData = {
+				name: "Tenant",
+				address: "Tenant Address",
+			};
+			await request(app)
+				.post("/tenants/create")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send(tenantData);
+
+			const getTenantResponse = await request(app)
+				.get("/tenants/get")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send({ id: "1" });
+			expect(getTenantResponse.statusCode).toBe(201);
+		});
 	});
 });

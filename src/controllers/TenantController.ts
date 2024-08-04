@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type { Logger } from "winston";
-import type { ITenantService, TenantRequest } from "../types";
+import type { GetTenantRequest, ITenantService, TenantRequest } from "../types";
 
 export class TenantController {
 	tenantService: ITenantService;
@@ -20,6 +20,17 @@ export class TenantController {
 		} catch (err) {
 			next(err);
 			return;
+		}
+	}
+
+	async get(req: GetTenantRequest, res: Response, next: NextFunction) {
+		try {
+			const { id } = req.body;
+			const tenant = await this.tenantService.get(Number(id));
+			this.logger.info(`successfully retrieved tenant: ${tenant}`);
+			return res.status(201).json({ data: tenant });
+		} catch (err) {
+			next(err);
 		}
 	}
 }
