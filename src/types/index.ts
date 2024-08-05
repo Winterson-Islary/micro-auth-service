@@ -8,6 +8,7 @@ export type UserData = {
 	name: string;
 	email: string;
 	password: string;
+	role?: string;
 };
 export interface RequestAuth extends Request {
 	auth: {
@@ -31,7 +32,7 @@ export interface LoginUserRequest extends Request {
 }
 
 export interface IUserService {
-	create({ name, email, password }: UserData): Promise<User | null>;
+	create({ name, email, password, role }: UserData): Promise<User | null>;
 	login({
 		email,
 		password,
@@ -60,6 +61,25 @@ export interface GetTenantRequest extends Request {
 export interface ITenantService {
 	create({ name, address }: TenantData): Promise<void>;
 	get(id: number): Promise<Tenant | null>;
+}
+
+export type AdminRequest = {
+	body: {
+		name: string;
+		email: string;
+		password: string;
+	};
+};
+export interface IAdminService {
+	create({
+		name,
+		email,
+		password,
+	}: {
+		name: string;
+		email: string;
+		password: string;
+	}): Promise<void>;
 }
 // CONSTANTS
 export const Roles = {

@@ -6,7 +6,12 @@ import { Constants, type IUserService, Roles, type UserData } from "../types";
 
 export class UserService implements IUserService {
 	constructor(private userRepository: Repository<User>) {}
-	async create({ name, email, password }: UserData): Promise<User | null> {
+	async create({
+		name,
+		email,
+		password,
+		role,
+	}: UserData): Promise<User | null> {
 		const userExist = await this.userRepository.findOne({
 			where: { email: email },
 		});
@@ -23,7 +28,7 @@ export class UserService implements IUserService {
 				name,
 				email,
 				password: hashedPassword,
-				role: Roles.CUSTOMER,
+				role: role || Roles.CUSTOMER,
 			});
 		} catch (_err) {
 			const customError = createHttpError(500, "failed to register user");
