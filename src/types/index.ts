@@ -9,6 +9,7 @@ export type UserData = {
 	email: string;
 	password: string;
 	role?: string;
+	tenantId?: number;
 };
 export interface RequestAuth extends Request {
 	auth: {
@@ -32,7 +33,13 @@ export interface LoginUserRequest extends Request {
 }
 
 export interface IUserService {
-	create({ name, email, password, role }: UserData): Promise<User | null>;
+	create({
+		name,
+		email,
+		password,
+		role,
+		tenantId,
+	}: UserData): Promise<User | null>;
 	login({
 		email,
 		password,
@@ -68,6 +75,8 @@ export type AdminRequest = {
 		name: string;
 		email: string;
 		password: string;
+		role: string;
+		tenantId: string;
 	};
 };
 export interface IAdminService {

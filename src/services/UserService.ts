@@ -3,14 +3,19 @@ import createHttpError from "http-errors";
 import type { Repository } from "typeorm";
 import type { User } from "../entity/User";
 import { Constants, type IUserService, Roles, type UserData } from "../types";
+import type { TenantService } from "./TenantService";
 
 export class UserService implements IUserService {
-	constructor(private userRepository: Repository<User>) {}
+	constructor(
+		private userRepository: Repository<User>,
+		private tenantService: TenantService,
+	) {}
 	async create({
 		name,
 		email,
 		password,
 		role,
+		tenantId,
 	}: UserData): Promise<User | null> {
 		const userExist = await this.userRepository.findOne({
 			where: { email: email },
@@ -23,12 +28,16 @@ export class UserService implements IUserService {
 			password,
 			Constants.saltRounds,
 		);
+		const Tenant = tenantId
+			? await this.tenantService.get(Number(tenantId))
+			: null;
 		try {
 			return await this.userRepository.save({
 				name,
 				email,
 				password: hashedPassword,
 				role: role || Roles.CUSTOMER,
+				tenant: Tenant || undefined,
 			});
 		} catch (_err) {
 			const customError = createHttpError(500, "failed to register user");
