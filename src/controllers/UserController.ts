@@ -1,4 +1,4 @@
-import type { NextFunction, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import type { Logger } from "winston";
 import type { UserService } from "../services/UserService";
@@ -32,6 +32,24 @@ export class UserController {
 		} catch (_err) {
 			const customError = createHttpError(401, "failed to create user");
 			next(customError);
+		}
+	}
+	async destroy(req: Request, res: Response, next: NextFunction) {
+		const userID = Number(req.params.id);
+		if (Number.isNaN(userID)) {
+			const customError = createHttpError(400, "Invalid Params");
+			next(customError);
+			return;
+		}
+		try {
+			await this.userService.deleteById(userID);
+			this.logger.info(`deleted user with id: ${userID}`);
+			return res
+				.status(201)
+				.json({ message: `deleted user with id: ${userID}` });
+		} catch (err) {
+			next(err);
+			return;
 		}
 	}
 }
