@@ -91,5 +91,31 @@ describe("POST /users", () => {
 			const users: User[] = await userRepository.find();
 			expect(users).toHaveLength(0);
 		});
+		it("Should delete user when passed a valid id", async () => {
+			const tenantData = await createTenant(
+				connection.getRepository(Tenant),
+			);
+			const userData = {
+				name: "Robot",
+				email: "robot@robo.mail",
+				password: "notARobot",
+				role: Roles.MANAGER,
+				tenantId: tenantData.id,
+			};
+			await request(app)
+				.post("/users")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send(userData);
+			const userRepository = connection.getRepository(User);
+			const users: User[] = await userRepository.find();
+			const userID = (users[0] as User).id;
+			const delete_request = await request(app)
+				.delete(`/users/${userID}`)
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send();
+			expect(delete_request.statusCode).toBe(201);
+			const deleted_user: User[] = await userRepository.find();
+			expect(deleted_user).toHaveLength(0);
+		});
 	});
 });
