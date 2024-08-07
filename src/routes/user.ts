@@ -19,5 +19,13 @@ const userController = new UserController(userService, logger);
 router.post("/", authenticate, canAccess([Roles.ADMIN]), (req, res, next) => {
 	userController.create(req as AdminRequest, res, next);
 });
+router.delete(
+	"/:id",
+	authenticate,
+	canAccess([Roles.ADMIN]),
+	(req, res, next) => {
+		userController.destroy(req, res, next);
+	},
+);
 
 export default router;
