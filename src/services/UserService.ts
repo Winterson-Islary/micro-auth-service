@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
 import type { Repository } from "typeorm";
-import type { User } from "../entity/User";
+import { User } from "../entity/User";
 import { Constants, type IUserService, Roles, type UserData } from "../types";
 import type { TenantService } from "./TenantService";
 
@@ -81,5 +81,19 @@ export class UserService implements IUserService {
 			throw customError;
 		}
 		return user;
+	}
+
+	async deleteById(id: number) {
+		try {
+			return await this.userRepository
+				.createQueryBuilder()
+				.delete()
+				.from(User)
+				.where("id = :id", { id })
+				.execute();
+		} catch (_err) {
+			const customError = createHttpError(400, "failed to delete user");
+			throw customError;
+		}
 	}
 }
