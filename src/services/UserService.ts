@@ -91,8 +91,8 @@ export class UserService implements IUserService {
 				.from(User)
 				.where("id = :id", { id })
 				.execute();
-		} catch (_err) {
-			const customError = createHttpError(400, "failed to delete user");
+		} catch (err) {
+			const customError = createHttpError(400, `Error: ${err}`);
 			throw customError;
 		}
 	}

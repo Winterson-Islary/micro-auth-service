@@ -16,13 +16,18 @@ const tenantRepository = AppDataSource.getRepository(Tenant);
 const tenantService = new TenantService(tenantRepository);
 const userService = new UserService(userRepository, tenantService);
 const userController = new UserController(userService, logger);
-router.post("/", authenticate, canAccess([Roles.ADMIN]), (req, res, next) => {
-	userController.create(req as AdminRequest, res, next);
-});
+router.post(
+	"/",
+	authenticate,
+	canAccess([Roles.ADMIN, Roles.CUSTOMER]),
+	(req, res, next) => {
+		userController.create(req as AdminRequest, res, next);
+	},
+);
 router.delete(
 	"/:id",
 	authenticate,
-	canAccess([Roles.ADMIN]),
+	canAccess([Roles.ADMIN, Roles.CUSTOMER]),
 	(req, res, next) => {
 		userController.destroy(req, res, next);
 	},
