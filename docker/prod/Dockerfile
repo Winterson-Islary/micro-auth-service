@@ -1,4 +1,4 @@
-FROM node:18-alpine as builder
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN npm run build
 
 
 
-FROM node:18-apline as production
+FROM node:18-apline AS production
 
 ENV NODE_ENV=production
 

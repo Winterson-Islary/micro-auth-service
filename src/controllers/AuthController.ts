@@ -2,9 +2,6 @@ import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import type { JwtPayload } from "jsonwebtoken";
 import type { Logger } from "winston";
-import { AppDataSource } from "../configs/data-source";
-import { RefreshToken } from "../entity/RefreshToken";
-import { User } from "../entity/User";
 import type {
 	ITokenService,
 	IUserService,
@@ -42,7 +39,7 @@ export class AuthController {
 			this.logger.info("user registered successfully: ", {
 				id: result?.id,
 			});
-			res.status(201).json({ id: result?.id || "no id" });
+			res.status(201).json({ id: result?.id ?? "no id" });
 		} catch (err) {
 			next(err);
 			return;

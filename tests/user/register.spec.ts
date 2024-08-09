@@ -1,4 +1,3 @@
-import type { IncomingHttpHeaders } from "node:http";
 import request from "supertest";
 import type { DataSource } from "typeorm";
 import app from "../../src/app";

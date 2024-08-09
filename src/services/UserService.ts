@@ -36,8 +36,8 @@ export class UserService implements IUserService {
 				name,
 				email,
 				password: hashedPassword,
-				role: role || Roles.CUSTOMER,
-				tenant: Tenant || undefined,
+				role: role ?? Roles.CUSTOMER,
+				tenant: Tenant ?? undefined,
 			});
 		} catch (_err) {
 			const customError = createHttpError(500, "failed to register user");

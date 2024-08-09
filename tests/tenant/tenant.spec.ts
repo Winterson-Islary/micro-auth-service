@@ -1,4 +1,3 @@
-import type { IncomingHttpHeaders } from "node:http";
 import createJWKSMock from "mock-jwks";
 import request from "supertest";
 import type { DataSource } from "typeorm";
