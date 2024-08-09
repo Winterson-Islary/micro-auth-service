@@ -12,11 +12,19 @@ import type { ITokenService } from "../types";
 export class TokenService implements ITokenService {
 	constructor(private refreshTokenRepository: Repository<RefreshToken>) {}
 	generateAccessToken(payload: JwtPayload): string {
-		let privateKey: Buffer;
+		// let privateKey: Buffer;
+		// try {
+		// 	privateKey = fs.readFileSync(
+		// 		path.join(__dirname, "../../certs/private.pem"),
+		// 	);
+		// }
+		let privateKey: string | undefined;
 		try {
-			privateKey = fs.readFileSync(
-				path.join(__dirname, "../../certs/private.pem"),
-			);
+			privateKey = Config.PRIVATE_KEY;
+			if (!privateKey) {
+				const customError = createHttpError(500, "secret key not set");
+				throw customError;
+			}
 		} catch (_err) {
 			const customError = createHttpError(
 				500,
