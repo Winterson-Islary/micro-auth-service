@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 import type { Logger } from "winston";
 import type { GetTenantRequest, ITenantService, TenantRequest } from "../types";
 

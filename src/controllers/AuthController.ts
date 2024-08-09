@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 import createHttpError from "http-errors";
 import type { JwtPayload } from "jsonwebtoken";
 import type { Logger } from "winston";
