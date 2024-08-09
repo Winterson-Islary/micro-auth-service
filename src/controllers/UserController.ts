@@ -3,7 +3,6 @@ import createHttpError from "http-errors";
 import type { Logger } from "winston";
 import type { UserService } from "../services/UserService";
 import type { AdminRequest } from "../types";
-import { Roles } from "../types";
 export class UserController {
 	userService: UserService;
 	logger: Logger;

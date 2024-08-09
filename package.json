@@ -5,6 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"prepare": "husky",
+		"build": "tsc",
 		"dev": "cross-env NODE_ENV=development nodemon src/server.ts",
 		"format:check": "biome check ./src",
 		"format:fix": "biome check --write ./src",

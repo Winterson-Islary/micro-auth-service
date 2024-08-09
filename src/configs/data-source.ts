@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
 	database: Config.DB_NAME,
 	synchronize: false, // Should only be true in development.
 	logging: false,
-	entities: ["src/entity/*.ts"],
-	migrations: ["src/migration/*.ts"],
+	entities: ["src/entity/*.{ts, js}"],
+	migrations: ["src/migration/*.{ts, js}"],
 	subscribers: [],
 });
