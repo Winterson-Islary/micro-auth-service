@@ -157,7 +157,7 @@ describe("POST /auth/refresh", () => {
 			}
 
 			const refreshResponse = await request(app)
-				.post("/auth/refrsh")
+				.post("/auth/refresh")
 				.set("Cookie", [`REFRESH_TOKEN=${refreshToken};`])
 				.send();
 			const newCookies =
