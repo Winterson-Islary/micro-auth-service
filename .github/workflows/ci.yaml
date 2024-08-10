@@ -13,9 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     # if: github.event_name == 'pull_request' ( uncomment in case of separation of jobs based on events)
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup PNPM
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{matrix.node-version}} 
+        uses: actions/setup-node@v4
+        with: 
+          node-version: ${{matrix.node-version}}
+          cache: 'pnpm'
       - name: Install Dependencies
         run: pnpm ci
       - name: Run linter
@@ -50,7 +57,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Log in to Docker hub
         uses: docker/login-action@v1
         with:
