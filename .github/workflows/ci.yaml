@@ -1,0 +1,64 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    name: Build the project
+    runs-on: ubuntu-latest
+    # if: github.event_name == 'pull_request' ( uncomment in case of separation of jobs based on events)
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+      - name: Install Dependencies
+        run: pnpm ci
+      - name: Run linter
+        run: pnpm run format:fix
+      - name: Test and coverage
+        run: pnpm run test
+        env:
+          DB_HOST: ${{secrets.TEST_DB_HOST}}
+          DB_PORT: ${{secrets.TEST_DB_PORT}}
+          DB_USERNAME: ${{secrets.TEST_DB_USERNAME}}
+          DB_PASSWORD: ${{secrets.TEST_DB_PASSWORD}}
+          DB_NAME: ${{secrets.TEST_DB_NAME}}
+          JWT_REFRESH_KEY: ${{secrets.REFRESH_TOKEN_SECRET}}
+          JWKS_URI: ${{secrets.JWKS_URI}}
+          PRIVATE_KEY: ${{secrets.PRIVATE_KEY}}
+      - name: Build-ts
+        run: pnpm run build
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+  
+  build-and-push-to-docker:
+    name: Build and Push Docker Image to Hub
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: winterson/mernstack-auth-service
+      IMAGE_TAG: build-${{github.run_number}}
+      FINAL_IMAGE: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+    
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Log in to Docker hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
+      - name: Build Docker Image
+        run: docker build -t ${{env.FINAL_IMAGE}} -f docker/prod/Dockerfile .
+      - name: PUSH Docker Image to Docker Hub
+        run: docker push ${{env.FINAL_IMAGE}}
