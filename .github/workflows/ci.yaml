@@ -44,9 +44,7 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: winterson/mernstack-auth-service
-      IMAGE_TAG: build-${{github.run_number}}
-      FINAL_IMAGE: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+      IMAGE_NAME: winterson/mernstack-auth-service:build-${{github.run_number}}
     
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
@@ -59,6 +57,6 @@ jobs:
           username: ${{secrets.DOCKERHUB_USERNAME}}
           password: ${{secrets.DOCKERHUB_PASSWORD}}
       - name: Build Docker Image
-        run: docker build -t ${{env.FINAL_IMAGE}} -f docker/prod/Dockerfile .
+        run: docker build -t ${{env.IMAGE_NAME}} -f docker/prod/Dockerfile .
       - name: PUSH Docker Image to Docker Hub
-        run: docker push ${{env.FINAL_IMAGE}}
+        run: docker push ${{env.IMAGE_NAME}}
