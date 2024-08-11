@@ -15,7 +15,7 @@ RUN pnpm run build
 
 
 
-FROM node:18-apline AS production
+FROM node:18-alpine AS production
 
 ENV NODE_ENV=production
 
