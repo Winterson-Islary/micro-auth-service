@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 COPY . .
 
@@ -25,7 +25,7 @@ COPY package*.json ./
 
 COPY --from=builder /pnpm /pnpm
 
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm install --ignore-scripts
 
 COPY --from=builder /app/dist ./
 
