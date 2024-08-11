@@ -51,7 +51,7 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: winterson/mernstack-auth-service:build-${{github.run_number}}
+      IMAGE_NAME: wintersonisl/mernstack-auth-service:build-${{github.run_number}}
     
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
