@@ -17,6 +17,9 @@ RUN pnpm run build
 
 FROM node:18-alpine AS production
 
+RUN apk update && apk add --no-cache git
+RUN npm install -g pnpm
+
 ENV NODE_ENV=production
 
 WORKDIR /app
