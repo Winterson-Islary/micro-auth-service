@@ -18,6 +18,9 @@ const {
 	JWT_REFRESH_KEY,
 	JWKS_URI,
 	PRIVATE_KEY,
+	SUPER_NAME,
+	SUPER_EMAIL,
+	SUPER_PASS,
 } = process.env;
 
 export const Config = {
@@ -31,4 +34,7 @@ export const Config = {
 	JWT_REFRESH_KEY,
 	JWKS_URI,
 	PRIVATE_KEY,
+	SUPER_NAME,
+	SUPER_EMAIL,
+	SUPER_PASS,
 } as const;

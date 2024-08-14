@@ -18,7 +18,7 @@ router.post("/", authenticate, (_req, res) => {
 router.post(
 	"/create",
 	authenticate,
-	canAccess([Roles.ADMIN]),
+	canAccess([Roles.ADMIN, Roles.SUPERADMIN]),
 	(req, res, next) => {
 		tenantController.create(req as TenantRequest, res, next);
 	},

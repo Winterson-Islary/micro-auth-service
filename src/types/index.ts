@@ -95,6 +95,7 @@ export const Roles = {
 	CUSTOMER: "customer",
 	ADMIN: "admin",
 	MANAGER: "manager",
+	SUPERADMIN: "super",
 } as const;
 
 const saltRounds = 10;
