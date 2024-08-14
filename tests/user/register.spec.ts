@@ -98,7 +98,7 @@ describe("POST /auth/register", () => {
 
 		expect(users[0].password).not.toBe(userData.password);
 		expect(users[0].password).toHaveLength(60);
-		expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
+		expect(users[0].password).toMatch(/^\$2[a|b]\$\d+\$/);
 	});
 	it("should return statuscode 400 if email is already in use", async () => {
 		const userData = {
