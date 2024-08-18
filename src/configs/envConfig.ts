@@ -21,6 +21,7 @@ const {
 	SUPER_NAME,
 	SUPER_EMAIL,
 	SUPER_PASS,
+	CLIENT_ORIGIN,
 } = process.env;
 
 export const Config = {
@@ -37,4 +38,5 @@ export const Config = {
 	SUPER_NAME,
 	SUPER_EMAIL,
 	SUPER_PASS,
+	CLIENT_ORIGIN,
 } as const;
