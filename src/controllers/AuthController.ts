@@ -93,9 +93,12 @@ export class AuthController {
 		const id = Number(req.auth.sub);
 		try {
 			const user = await this.userService.findById(id);
-			return res
-				.status(200)
-				.json({ id: user?.id, role: user?.role, name: user?.name });
+			return res.status(200).json({
+				id: user?.id,
+				role: user?.role,
+				name: user?.name,
+				tenant: user?.tenant,
+			});
 		} catch (error) {
 			next(error);
 			return;

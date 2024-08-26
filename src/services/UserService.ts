@@ -75,6 +75,9 @@ export class UserService implements IUserService {
 			where: {
 				id,
 			},
+			relations: {
+				tenant: true,
+			},
 		});
 		if (!user) {
 			const customError = createHttpError(500, "unable to find user");
