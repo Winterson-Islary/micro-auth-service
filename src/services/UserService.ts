@@ -85,7 +85,15 @@ export class UserService implements IUserService {
 		}
 		return user;
 	}
-
+	async getAll() {
+		try {
+			const user: User[] = await this.userRepository.find();
+			return user;
+		} catch (_err) {
+			const customError = createHttpError(500, "failed to get users");
+			throw customError;
+		}
+	}
 	async deleteById(id: number) {
 		try {
 			return await this.userRepository

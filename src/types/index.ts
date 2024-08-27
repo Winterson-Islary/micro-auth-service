@@ -45,6 +45,7 @@ export interface IUserService {
 		password,
 	}: { email: string; password: string }): Promise<User | null>;
 	findById(id: number): Promise<User | null>;
+	getAll(): Promise<User[] | null>;
 }
 export interface ITokenService {
 	generateAccessToken(payload: JwtPayload): string;

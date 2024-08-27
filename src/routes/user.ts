@@ -24,6 +24,14 @@ router.post(
 		userController.create(req as AdminRequest, res, next);
 	},
 );
+router.get(
+	"/",
+	authenticate,
+	canAccess([Roles.ADMIN, Roles.SUPERADMIN]),
+	(req, res, next) => {
+		userController.get(req, res, next);
+	},
+);
 router.delete(
 	"/:id",
 	authenticate,

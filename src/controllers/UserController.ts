@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import type { Logger } from "winston";
+import type { User } from "../entity/User";
 import type { UserService } from "../services/UserService";
 import type { AdminRequest } from "../types";
 export class UserController {
@@ -31,6 +32,15 @@ export class UserController {
 		} catch (_err) {
 			const customError = createHttpError(401, "failed to create user");
 			next(customError);
+		}
+	}
+	async get(_req: Request, res: Response, next: NextFunction) {
+		try {
+			const user: User[] = await this.userService.getAll();
+			return res.status(200).json({ users: user });
+		} catch (err) {
+			next(err);
+			return;
 		}
 	}
 	async destroy(req: Request, res: Response, next: NextFunction) {
