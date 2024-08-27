@@ -58,5 +58,24 @@ describe("GET /users", () => {
 			const { users } = response.body;
 			expect(users).toHaveLength(1);
 		});
+		it("should not return password field", async () => {
+			const userData = {
+				name: "Robot",
+				email: "robot@robo.mail",
+				password: "notARobot",
+				role: Roles.MANAGER,
+			};
+			await request(app)
+				.post("/users")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send(userData);
+
+			const response = await request(app)
+				.get("/users")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send();
+			const { users } = response.body;
+			expect(users[0] as User).not.toHaveProperty("password");
+		});
 	});
 });
