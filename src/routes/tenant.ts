@@ -23,8 +23,12 @@ router.post(
 		tenantController.create(req as TenantRequest, res, next);
 	},
 );
-router.get("/get", authenticate, (req, res, next) => {
-	tenantController.get(req as GetTenantRequest, res, next);
+router.get("/getById", authenticate, (req, res, next) => {
+	tenantController.getById(req as GetTenantRequest, res, next);
+});
+
+router.get("/getAll", authenticate, (req, res, next) => {
+	tenantController.getAll(req, res, next);
 });
 
 export default router;

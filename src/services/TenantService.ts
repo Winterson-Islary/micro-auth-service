@@ -17,7 +17,7 @@ export class TenantService implements ITenantService {
 			throw customError;
 		}
 	}
-	async get(id: number) {
+	async getById(id: number) {
 		try {
 			return await this.tenantRepository.findOne({
 				where: {
@@ -26,9 +26,18 @@ export class TenantService implements ITenantService {
 			});
 		} catch (_err) {
 			const customError = createHttpError(
-				401,
+				500,
 				`failed to get tenant with id: ${id}`,
 			);
+			throw customError;
+		}
+	}
+	async getAll() {
+		try {
+			const tenants: Tenant[] = await this.tenantRepository.find();
+			return tenants;
+		} catch (_err) {
+			const customError = createHttpError(500, "failed to get tenants");
 			throw customError;
 		}
 	}

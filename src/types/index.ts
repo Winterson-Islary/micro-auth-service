@@ -68,7 +68,8 @@ export interface GetTenantRequest extends Request {
 }
 export interface ITenantService {
 	create({ name, address }: TenantData): Promise<void>;
-	get(id: number): Promise<Tenant | null>;
+	getById(id: number): Promise<Tenant | null>;
+	getAll(): Promise<Tenant[] | null>;
 }
 
 export type AdminRequest = {

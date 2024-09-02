@@ -30,7 +30,7 @@ export class UserController {
 				.status(201)
 				.json({ message: "manager record created successfully" });
 		} catch (_err) {
-			const customError = createHttpError(401, "failed to create user");
+			const customError = createHttpError(401, `${_err}`);
 			next(customError);
 		}
 	}

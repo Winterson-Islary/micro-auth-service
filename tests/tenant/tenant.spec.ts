@@ -89,10 +89,65 @@ describe("POST /tenants", () => {
 				.send(tenantData);
 
 			const getTenantResponse = await request(app)
-				.get("/tenants/get")
+				.get("/tenants/getById")
 				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
 				.send({ id: "1" });
-			expect(getTenantResponse.statusCode).toBe(201);
+			expect(getTenantResponse.statusCode).toBe(200);
+		});
+	});
+});
+
+describe("GET /tenants", () => {
+	let connection: DataSource;
+	let jwks: ReturnType<typeof createJWKSMock>;
+	let adminToken: string;
+
+	beforeAll(async () => {
+		connection = await AppDataSource.initialize();
+		jwks = createJWKSMock("http://localhost:5501");
+	});
+	beforeEach(async () => {
+		jwks.start();
+		await connection.dropDatabase();
+		await connection.synchronize();
+		adminToken = jwks.token({
+			sub: "1",
+			role: Roles.ADMIN,
+		});
+	});
+	afterEach(async () => {
+		jwks.stop();
+	});
+	afterAll(async () => {
+		await connection.destroy();
+	});
+
+	describe("On valid input", () => {
+		it("Should return list of tenants on success", async () => {
+			const Tenant1 = {
+				name: "Tenant 1",
+				address: "Address of tenant 1",
+			};
+			const Tenant2 = {
+				name: "Tenant 2",
+				address: "Address of tenant 2",
+			};
+			await request(app)
+				.post("/tenants/create")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send(Tenant1);
+			await request(app)
+				.post("/tenants/create")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send(Tenant2);
+
+			const response = await request(app)
+				.get("/tenants/getAll")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send();
+			const tenants = response.body.data;
+			expect(response.statusCode).toBe(200);
+			expect(tenants).toHaveLength(2);
 		});
 	});
 });
