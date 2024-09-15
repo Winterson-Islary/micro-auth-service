@@ -34,10 +34,16 @@ export class UserController {
 			next(customError);
 		}
 	}
-	async get(_req: Request, res: Response, next: NextFunction) {
+	async get(req: Request, res: Response, next: NextFunction) {
+		const paginationOption = {
+			curPage: req.body.curPage,
+			perPage: req.body.perPage,
+		};
 		try {
-			const user: User[] = await this.userService.getAll();
-			return res.status(200).json({ users: user });
+			const users: [User[], number] =
+				await this.userService.getAll(paginationOption);
+			this.logger.info(`USERS: ${users[0]} COUNT: ${users[1]}`);
+			return res.status(200).json({ users: users[0], count: users[1] });
 		} catch (err) {
 			next(err);
 			return;

@@ -2,7 +2,13 @@ import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
 import type { Repository } from "typeorm";
 import { User } from "../entity/User";
-import { Constants, type IUserService, Roles, type UserData } from "../types";
+import {
+	Constants,
+	type IUserService,
+	type PaginationRequest,
+	Roles,
+	type UserData,
+} from "../types";
 import type { TenantService } from "./TenantService";
 
 export class UserService implements IUserService {
@@ -85,20 +91,23 @@ export class UserService implements IUserService {
 		}
 		return user;
 	}
-	async getAll() {
+	async getAll(paginationOption: PaginationRequest) {
 		try {
-			const user: User[] = await this.userRepository.find({
-				select: [
-					"id",
-					"name",
-					"role",
-					"email",
-					"tenant",
-					"createdAt",
-					"isActive",
-				],
-			});
-			return user;
+			const queryBuilder = this.userRepository.createQueryBuilder("user");
+			const users: [User[], number] = await queryBuilder
+				.skip((paginationOption.curPage - 1) * paginationOption.perPage)
+				.take(paginationOption.perPage)
+				.select([
+					"user.id",
+					"user.name",
+					"user.role",
+					"user.email",
+					"user.tenant",
+					"user.createdAt",
+					"user.isActive",
+				])
+				.getManyAndCount();
+			return users;
 		} catch (_err) {
 			const customError = createHttpError(500, "failed to get users");
 			throw customError;
