@@ -32,6 +32,11 @@ export interface LoginUserRequest extends Request {
 	body: Omit<UserData, "name">;
 }
 
+export type PaginationRequest = {
+	curPage: number;
+	perPage: number;
+};
+
 export interface IUserService {
 	create({
 		name,
@@ -45,7 +50,9 @@ export interface IUserService {
 		password,
 	}: { email: string; password: string }): Promise<User | null>;
 	findById(id: number): Promise<User | null>;
-	getAll(): Promise<User[] | null>;
+	getAll(
+		paginationOption: PaginationRequest,
+	): Promise<[User[], number] | null>;
 }
 export interface ITokenService {
 	generateAccessToken(payload: JwtPayload): string;
@@ -66,6 +73,7 @@ export type getTenantData = {
 export interface GetTenantRequest extends Request {
 	body: getTenantData;
 }
+
 export interface ITenantService {
 	create({ name, address }: TenantData): Promise<void>;
 	getById(id: number): Promise<Tenant | null>;
@@ -78,7 +86,7 @@ export type AdminRequest = {
 		email: string;
 		password: string;
 		role: string;
-		tenantId: string;
+		tenantId?: string;
 	};
 };
 export interface IAdminService {
