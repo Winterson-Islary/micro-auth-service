@@ -42,8 +42,12 @@ export class UserController {
 		try {
 			const users: [User[], number] =
 				await this.userService.getAll(paginationOption);
-			this.logger.info(`USERS: ${users[0]} COUNT: ${users[1]}`);
-			return res.status(200).json({ users: users[0], count: users[1] });
+			return res.status(200).json({
+				curPage: paginationOption.curPage,
+				perPage: paginationOption.perPage,
+				users: users[0],
+				count: users[1],
+			});
 		} catch (err) {
 			next(err);
 			return;
