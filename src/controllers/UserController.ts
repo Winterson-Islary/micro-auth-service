@@ -13,18 +13,17 @@ export class UserController {
 	}
 	async create(req: AdminRequest, res: Response, next: NextFunction) {
 		const { name, password, email, role, tenantId } = req.body;
-		this.logger.info(`Tenant ID from user: ${tenantId}`);
+		this.logger.info(
+			`Tenant ID from user: ${tenantId} of type ${typeof tenantId}`,
+		);
 		try {
-			const result = await this.userService.create({
+			await this.userService.create({
 				name,
 				password,
 				email,
 				role,
 				tenantId: Number(tenantId),
 			});
-			this.logger.info(
-				`User Creation By Admin: ${result?.tenant.id}-${result?.tenant.name}-${result?.tenant.address}`,
-			);
 			this.logger.info("manager created successfully");
 			return res
 				.status(201)

@@ -34,7 +34,7 @@ export class UserService implements IUserService {
 			password,
 			Constants.saltRounds,
 		);
-		const Tenant = tenantId
+		const Tenant = !Number.isNaN(tenantId)
 			? await this.tenantService.getById(Number(tenantId))
 			: null;
 		try {
@@ -109,7 +109,7 @@ export class UserService implements IUserService {
 				.getManyAndCount();
 			return users;
 		} catch (_err) {
-			const customError = createHttpError(500, "failed to get users");
+			const customError = createHttpError(400, "failed to get users");
 			throw customError;
 		}
 	}

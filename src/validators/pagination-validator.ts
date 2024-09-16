@@ -25,7 +25,7 @@ export const ValidateUsersPaginationQuery = async (
 		return next();
 	} catch (error) {
 		if (error instanceof z.ZodError) {
-			return res.status(400).json({ errors: error.issues });
+			return res.status(500).json({ errors: error.issues });
 		}
 		return res
 			.status(400)
