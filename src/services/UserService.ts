@@ -34,9 +34,10 @@ export class UserService implements IUserService {
 			password,
 			Constants.saltRounds,
 		);
-		const Tenant = !Number.isNaN(tenantId)
-			? await this.tenantService.getById(Number(tenantId))
-			: null;
+		const Tenant =
+			tenantId !== undefined && !Number.isNaN(tenantId)
+				? await this.tenantService.getById(Number(tenantId))
+				: null;
 		try {
 			return await this.userRepository.save({
 				name,
