@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
-import type { Repository } from "typeorm";
+import { Brackets, type Repository } from "typeorm";
 import { User } from "../entity/User";
 import {
 	Constants,
@@ -97,9 +97,15 @@ export class UserService implements IUserService {
 			const queryBuilder = this.userRepository.createQueryBuilder("user");
 			if (paginationOption.username) {
 				const searchTerm = `%${paginationOption.username}%`;
-				queryBuilder
-					.where("user.name ILIKE :term", { term: searchTerm })
-					.orWhere("user.email ILike :term", { term: searchTerm });
+				queryBuilder.where(
+					new Brackets((qb) => {
+						qb.where("user.name ILIKE :term", {
+							term: searchTerm,
+						}).orWhere("user.email ILike :term", {
+							term: searchTerm,
+						});
+					}),
+				);
 			}
 			if (paginationOption.role) {
 				queryBuilder.andWhere("user.role = :role", {
@@ -123,6 +129,7 @@ export class UserService implements IUserService {
 					"user.createdAt",
 					"user.isActive",
 				])
+				.orderBy("user.id", "DESC")
 				.getManyAndCount();
 			return users;
 		} catch (_err) {
