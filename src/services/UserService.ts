@@ -95,6 +95,22 @@ export class UserService implements IUserService {
 	async getAll(paginationOption: PaginationRequest) {
 		try {
 			const queryBuilder = this.userRepository.createQueryBuilder("user");
+			if (paginationOption.username) {
+				const searchTerm = `%${paginationOption.username}%`;
+				queryBuilder
+					.where("user.name ILIKE :term", { term: searchTerm })
+					.orWhere("user.email ILike :term", { term: searchTerm });
+			}
+			if (paginationOption.role) {
+				queryBuilder.andWhere("user.role = :role", {
+					role: paginationOption.role,
+				});
+			}
+			if (paginationOption.isActive) {
+				queryBuilder.andWhere("user.isActive = :isActive", {
+					isActive: paginationOption.isActive,
+				});
+			}
 			const users: [User[], number] = await queryBuilder
 				.skip((paginationOption.curPage - 1) * paginationOption.perPage)
 				.take(paginationOption.perPage)

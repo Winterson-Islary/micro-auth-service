@@ -37,6 +37,9 @@ export class UserController {
 		const paginationOption = {
 			curPage: req.body.curPage,
 			perPage: req.body.perPage,
+			username: req.body.searchUser,
+			role: req.body.searchRole,
+			isActive: req.body.searchIsActive,
 		};
 		try {
 			const users: [User[], number] =

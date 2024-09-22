@@ -35,6 +35,9 @@ export interface LoginUserRequest extends Request {
 export type PaginationRequest = {
 	curPage: number;
 	perPage: number;
+	role?: string;
+	username?: string;
+	isActive?: boolean;
 };
 
 export interface IUserService {
