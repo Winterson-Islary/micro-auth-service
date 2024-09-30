@@ -94,7 +94,9 @@ export class UserService implements IUserService {
 	}
 	async getAll(paginationOption: PaginationRequest) {
 		try {
-			const queryBuilder = this.userRepository.createQueryBuilder("user");
+			const queryBuilder = this.userRepository
+				.createQueryBuilder("user")
+				.leftJoin("user.tenant", "tenant");
 			if (paginationOption.username) {
 				const searchTerm = `%${paginationOption.username}%`;
 				queryBuilder
@@ -112,8 +114,6 @@ export class UserService implements IUserService {
 				});
 			}
 			const users: [User[], number] = await queryBuilder
-				.skip((paginationOption.curPage - 1) * paginationOption.perPage)
-				.take(paginationOption.perPage)
 				.select([
 					"user.id",
 					"user.name",
@@ -122,7 +122,13 @@ export class UserService implements IUserService {
 					"user.tenant",
 					"user.createdAt",
 					"user.isActive",
+					"tenant.id",
+					"tenant.name",
+					"tenant.address",
 				])
+				.skip((paginationOption.curPage - 1) * paginationOption.perPage)
+				.take(paginationOption.perPage)
+				.orderBy("user.id", "DESC")
 				.getManyAndCount();
 			return users;
 		} catch (_err) {
