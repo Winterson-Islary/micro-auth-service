@@ -108,6 +108,15 @@ export class UserService implements IUserService {
 						});
 					}),
 				);
+				queryBuilder.where(
+					new Brackets((qb) => {
+						qb.where("user.name ILIKE :term", {
+							term: searchTerm,
+						}).orWhere("user.email ILike :term", {
+							term: searchTerm,
+						});
+					}),
+				);
 			}
 			if (paginationOption.role) {
 				queryBuilder.andWhere("user.role = :role", {
