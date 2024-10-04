@@ -9,7 +9,7 @@ import { canAccess } from "../middlewares/canAccess";
 import { TenantService } from "../services/TenantService";
 import { UserService } from "../services/UserService";
 import { type AdminRequest, Roles } from "../types";
-import { ValidateUsersPaginationQuery } from "../validators/pagination-validator";
+import { ValidateUsersPaginationQuery } from "../validators/user-pagination-validator";
 
 const router = Router();
 const userRepository = AppDataSource.getRepository(User);

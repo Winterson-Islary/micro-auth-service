@@ -34,8 +34,11 @@ export class TenantController {
 		}
 	}
 
-	async getAll(_req: Request, res: Response, next: NextFunction) {
+	async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
+			this.logger.info(
+				`Inside Tenant getAll: ${req.body?.search}, ${req.body.curPage}`,
+			);
 			const tenants = await this.tenantService.getAll();
 			this.logger.info("successfully retrieved tenants list");
 			return res.status(200).json({ data: tenants });

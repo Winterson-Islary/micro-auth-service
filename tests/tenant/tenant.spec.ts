@@ -142,7 +142,7 @@ describe("GET /tenants", () => {
 				.send(Tenant2);
 
 			const response = await request(app)
-				.get("/tenants/getAll")
+				.get("/tenants/")
 				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
 				.send();
 			const tenants = response.body.data;
