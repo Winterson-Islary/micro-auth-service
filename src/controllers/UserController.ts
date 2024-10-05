@@ -66,10 +66,33 @@ export class UserController {
 			await this.userService.deleteById(userID);
 			this.logger.info(`deleted user with id: ${userID}`);
 			return res
-				.status(201)
+				.status(204)
 				.json({ message: `deleted user with id: ${userID}` });
 		} catch (err) {
 			next(err);
+			return;
+		}
+	}
+	async update(req: Request, res: Response, next: NextFunction) {
+		try {
+			const newUserData = {
+				id: req.body.id,
+				name: req.body.name,
+				email: req.body.email,
+				password: req.body.password,
+				role: req.body.role,
+				isActive: req.body.isActive,
+			};
+			if (!newUserData.id) {
+				throw new Error("missing id for update request;");
+			}
+			await this.userService.update(newUserData);
+
+			return res
+				.status(204)
+				.json({ message: "user updated successfully" });
+		} catch (error) {
+			next(error);
 			return;
 		}
 	}

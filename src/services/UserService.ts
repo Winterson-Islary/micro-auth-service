@@ -1,12 +1,14 @@
 import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
 import { Brackets, type Repository } from "typeorm";
+import logger from "../configs/logger";
 import { User } from "../entity/User";
 import {
 	Constants,
 	type IUserService,
 	type PaginationRequest,
 	Roles,
+	type TUpdateUser,
 	type UserData,
 } from "../types";
 import type { TenantService } from "./TenantService";
@@ -161,6 +163,41 @@ export class UserService implements IUserService {
 				.execute();
 		} catch (_err) {
 			const customError = createHttpError(400, "failed to delete user");
+			throw customError;
+		}
+	}
+
+	async update(userData: TUpdateUser) {
+		try {
+			const user = await this.userRepository.findOne({
+				where: {
+					id: userData.id,
+				},
+				relations: {
+					tenant: true,
+				},
+			});
+			if (!user) {
+				const customError = createHttpError(500, "unable to find user");
+				throw customError;
+			}
+			const hashedPassword = userData.password
+				? await bcrypt.hash(userData.password, Constants.saltRounds)
+				: undefined;
+			await this.userRepository.update(
+				{ id: userData.id },
+				{
+					name: userData.name || user.name,
+					email: userData.email || user.email,
+					password: hashedPassword || user.password,
+					isActive: userData.isActive || user.isActive,
+					role: userData.role || user.role,
+				},
+			);
+			logger.info("Logging User Data: ", userData);
+		} catch (err) {
+			logger.info(`Error: ${err}; Location: "UserService";`);
+			const customError = createHttpError(400, "failed to update user");
 			throw customError;
 		}
 	}
