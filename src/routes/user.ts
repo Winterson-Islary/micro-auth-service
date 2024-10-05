@@ -10,6 +10,7 @@ import { TenantService } from "../services/TenantService";
 import { UserService } from "../services/UserService";
 import { type AdminRequest, Roles } from "../types";
 import { ValidateUsersPaginationQuery } from "../validators/user-pagination-validator";
+import { ValidateUserUpdateQuery } from "../validators/user-update-validator";
 
 const router = Router();
 const userRepository = AppDataSource.getRepository(User);
@@ -32,6 +33,15 @@ router.get(
 	ValidateUsersPaginationQuery,
 	(req, res, next) => {
 		userController.get(req, res, next);
+	},
+);
+router.patch(
+	"/",
+	authenticate,
+	canAccess([Roles.ADMIN, Roles.SUPERADMIN]),
+	ValidateUserUpdateQuery,
+	(req, res, next) => {
+		userController.update(req, res, next);
 	},
 );
 router.delete(

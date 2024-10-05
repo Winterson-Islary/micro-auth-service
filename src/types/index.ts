@@ -11,6 +11,15 @@ export type UserData = {
 	role?: string;
 	tenantId?: number;
 };
+export type TUpdateUser = {
+	id: number;
+	name?: string;
+	email?: string;
+	password?: string;
+	role?: string;
+	isActive?: boolean;
+	tenantId?: number;
+};
 export interface RequestAuth extends Request {
 	auth: {
 		sub: string;
@@ -56,6 +65,7 @@ export interface IUserService {
 	getAll(
 		paginationOption: PaginationRequest,
 	): Promise<[User[], number] | null>;
+	update(updateData: TUpdateUser): void;
 }
 export interface ITokenService {
 	generateAccessToken(payload: JwtPayload): string;

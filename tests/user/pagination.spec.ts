@@ -30,22 +30,24 @@ describe("GET /users", () => {
 		await connection.destroy();
 	});
 
-	it("On valid pagination input", async () => {
-		const userData = {
-			name: "Robot",
-			email: "robot@robo.mail",
-			password: "notARobot",
-			role: Roles.MANAGER,
-		};
-		await request(app)
-			.post("/users")
-			.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
-			.send(userData);
-		const queryString =
-			"/users?curPage=10&perPage=7&user=Robot&role=manager";
-		const response = await request(app)
-			.get(queryString)
-			.set("Cookie", [`ACCESS_TOKEN=${adminToken};`]);
-		expect(response.statusCode).toBe(200);
+	describe("On valid pagination input", () => {
+		it("Should return 200", async () => {
+			const userData = {
+				name: "Robot",
+				email: "robot@robo.mail",
+				password: "notARobot",
+				role: Roles.MANAGER,
+			};
+			await request(app)
+				.post("/users")
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
+				.send(userData);
+			const queryString =
+				"/users?curPage=10&perPage=7&user=Robot&role=manager";
+			const response = await request(app)
+				.get(queryString)
+				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`]);
+			expect(response.statusCode).toBe(200);
+		});
 	});
 });

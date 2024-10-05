@@ -113,7 +113,7 @@ describe("POST /users", () => {
 				.delete(`/users/${userID}`)
 				.set("Cookie", [`ACCESS_TOKEN=${adminToken};`])
 				.send();
-			expect(delete_request.statusCode).toBe(201);
+			expect(delete_request.statusCode).toBe(204);
 			const deleted_user: User[] = await userRepository.find();
 			expect(deleted_user).toHaveLength(0);
 		});
