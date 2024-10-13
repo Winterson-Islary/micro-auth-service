@@ -41,6 +41,7 @@ export class TenantController {
 			);
 			const tenants = await this.tenantService.getAll();
 			this.logger.info("successfully retrieved tenants list");
+			this.logger.info(tenants);
 			return res.status(200).json({ data: tenants });
 		} catch (err) {
 			next(err);

@@ -34,7 +34,14 @@ export class TenantService implements ITenantService {
 	}
 	async getAll() {
 		try {
-			const tenants: Tenant[] = await this.tenantRepository.find();
+			const tenants: Tenant[] = await this.tenantRepository.find({
+				select: {
+					id: true,
+					name: true,
+					address: true,
+					createdAt: true,
+				},
+			});
 			return tenants;
 		} catch (_err) {
 			const customError = createHttpError(500, "failed to get tenants");
