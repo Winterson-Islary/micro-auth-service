@@ -48,7 +48,11 @@ export type PaginationRequest = {
 	username?: string;
 	isActive?: boolean;
 };
-
+export type TenantPaginationRequest = {
+	search: string | undefined;
+	perPage: number;
+	curPage: number;
+};
 export interface IUserService {
 	create({
 		name,
@@ -90,7 +94,7 @@ export interface GetTenantRequest extends Request {
 export interface ITenantService {
 	create({ name, address }: TenantData): Promise<void>;
 	getById(id: number): Promise<Tenant | null>;
-	getAll(): Promise<Tenant[] | null>;
+	getAll(tenantPageReq: TenantPaginationRequest): Promise<Tenant[] | null>;
 }
 
 export type AdminRequest = {

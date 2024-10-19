@@ -1,6 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 import type { Logger } from "winston";
-import type { GetTenantRequest, ITenantService, TenantRequest } from "../types";
+import type {
+	GetTenantRequest,
+	ITenantService,
+	TenantPaginationRequest,
+	TenantRequest,
+} from "../types";
 
 export class TenantController {
 	tenantService: ITenantService;
@@ -36,12 +41,13 @@ export class TenantController {
 
 	async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
-			this.logger.info(
-				`Inside Tenant getAll: ${req.body?.search}, ${req.body.curPage}`,
-			);
-			const tenants = await this.tenantService.getAll();
+			const tenantPageReq: TenantPaginationRequest = {
+				search: req.body.search || undefined,
+				perPage: req.body.perPage || 5,
+				curPage: req.body.curPage || 1,
+			};
+			const tenants = await this.tenantService.getAll(tenantPageReq);
 			this.logger.info("successfully retrieved tenants list");
-			this.logger.info(tenants);
 			return res.status(200).json({ data: tenants });
 		} catch (err) {
 			next(err);
