@@ -57,6 +57,7 @@ export class AuthController {
 			const payload: JwtPayload = {
 				sub: String(user?.id),
 				role: user?.role,
+				tenantId: user?.tenant?.id,
 			};
 			const accessToken = this.tokenService.generateAccessToken(payload);
 
